@@ -19,16 +19,22 @@
 # </meta:header>
 #
 
-ZOOKEEPER_SERVER_ID={{ groups['zookeepers'].index(inventory_hostname) + 1 }}
-ZOOKEEPER_SERVERS=
-{%- for host in groups['zookeepers'] -%}
-    {%- if inventory_hostname == hostvars[host]['inventory_hostname'] -%}
-        0.0.0.0
-    {%- else -%}
-        {{- hostvars[host]['inventory_hostname'] -}}
-    {%- endif -%}
-        :2888:3888
-    {%- if not loop.last -%}
-        ;
-    {%- endif -%}
-{%- endfor %}
+---
+- hosts: zookeepers
+  tasks:
+    - name: Check Docker
+      become: yes
+      service:
+        name: docker
+        state: started
+    - name: Install compose YAML file
+      copy:
+        src:  zookeeper.yml
+        dest: zookeeper.yml
+    - name: Install compose ENV file
+      template:
+        src:  zookeeper.env
+        dest: zookeeper.env
+
+# Use compose or docker.
+

@@ -22,13 +22,8 @@
 ---
 - hosts: zookeepers
   tasks:
-    - name: Check Docker
-      become: yes
-      service:
-        name: docker
-        state: started
     - name: Install compose YAML file
       copy:
-        src:  zookeepers.yml
-        dest: zookeepers.yml
+        src:  zookeeper.yml
+        dest: zookeeper.yml
 

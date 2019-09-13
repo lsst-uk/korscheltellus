@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM korscheltellus/fedora:2019.09.11
+FROM korscheltellus/fedora:2019.09.13
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -41,4 +41,27 @@ RUN dnf install -y ipcalc
 # Add our util scripts.
 #COPY bin /usr/local/bin/
 #RUN chmod a+x /usr/local/bin/*.sh
+
+#
+# Create our user account.
+# This relies on our user having the same UID.
+# Install gosu code from not-root ?
+RUN useradd \
+    --uid 1000 \
+    --user-group \
+    --create-home \
+    --home-dir /home/ansible \
+    --no-log-init \
+        ansible
+
+#
+# Setup the account ssh directory.
+RUN mkdir /home/ansible/.ssh
+RUN chown ansible:ansible /home/ansible/.ssh
+RUN chmod u=rwx,g=,o= /home/ansible/.ssh
+
+#
+# Change to our user account
+USER ansible
+WORKDIR /home/ansible
 

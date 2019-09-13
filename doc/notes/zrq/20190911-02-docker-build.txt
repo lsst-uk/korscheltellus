@@ -29,14 +29,13 @@
 
         export buildtag=$(date '+%Y.%m.%d')
 
-        source bin/util.sh
-        dockerfiles ${buildtag}
-
         docker build \
+            --tag korscheltellus/fedora:latest \
             --tag korscheltellus/fedora:${buildtag:?} \
             docker/fedora
 
         docker build \
+            --tag korscheltellus/ansible-client:latest \
             --tag korscheltellus/ansible-client:${buildtag:?} \
             docker/ansible-client
 
@@ -51,14 +50,12 @@
         --password $(secret docker.io.pass)
 
 # -----------------------------------------------------
-# Tag and push our containers.
+# Push our images to Docker hub.
 #[user@desktop]
 
-    docker tag  "korscheltellus/fedora:${buildtag:?}" "korscheltellus/fedora:latest"
     docker push "korscheltellus/fedora:${buildtag:?}"
     docker push "korscheltellus/fedora:latest"
 
-    docker tag  "korscheltellus/ansible-client:${buildtag:?}" "korscheltellus/ansible-client:latest"
     docker push "korscheltellus/ansible-client:${buildtag:?}"
     docker push "korscheltellus/ansible-client:latest"
 
