@@ -1,0 +1,54 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+version: '3'
+
+networks:
+    zookeeper:
+
+volumes:
+    zklog:
+    zkdata:
+
+services:
+
+    courtney:
+        image:
+            confluentinc/cp-zookeeper:4.1.1
+        ports:
+            - "2181:2181"
+            - "2888:2888"
+            - "3888:3888"
+        environment:
+            - ZOOKEEPER_SERVER_ID=${ZOOKEEPER_SERVER_ID}
+            - ZOOKEEPER_SERVERS=${ZOOKEEPER_SERVERS}
+            - ZOOKEEPER_TICK_TIME=2000
+            - ZOOKEEPER_INIT_LIMIT=5
+            - ZOOKEEPER_SYNC_LIMIT=2
+            - ZOOKEEPER_CLIENT_PORT=2181
+            - ZOOKEEPER_CLIENT_PORT_ADDRESS=0.0.0.0
+        volumes:
+            - "zklog:/var/lib/zookeeper/log"
+            - "zkdata:/var/lib/zookeeper/data"
+        networks:
+            - zookeeper
+
+

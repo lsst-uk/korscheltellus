@@ -1,0 +1,245 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Delete existing virtual machines.
+#[user@desktop]
+
+    ssh work01
+    ssh work02
+    ssh work03
+    ssh work04
+
+        source "${HOME}/libvirt.settings"
+
+        virsh -c $libvirtcon \
+            list --all
+
+        for vmname in $(
+            virsh -c $libvirtcon list --name
+            )
+            do
+                echo "---- ----"
+                echo "Node [$vmname]"
+                virsh -c $libvirtcon \
+                    destroy ${vmname}
+            done
+
+        for vmname in $(
+            virsh -c $libvirtcon list --all --name
+            )
+            do
+                echo "---- ----"
+                echo "Node [$vmname]"
+                virsh -c $libvirtcon \
+                    undefine ${vmname}
+            done
+
+# -----------------------------------------------------
+# Import the Fedora 30 image.
+#[user@work01]
+
+    basename=fedora-30-docker-base-20190903
+    filename=${basename}.qcow
+    tempfile=/tmp/${filename}
+
+    wget -O "${tempfile:?}" "http://data.metagrid.co.uk/ischnura/base/${filename:?}"
+
+--START--
+--2019-09-12 17:21:51--  http://data.metagrid.co.uk/ischnura/base/fedora-30-docker-base-20190903.qcow
+Resolving data.metagrid.co.uk (data.metagrid.co.uk)... 178.79.157.93, 2a01:7e00::f03c:91ff:fedf:f8b
+Connecting to data.metagrid.co.uk (data.metagrid.co.uk)|178.79.157.93|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1226745856 (1.1G) [text/plain]
+Saving to: ‘/tmp/fedora-30-docker-base-20190903.qcow’
+....
+2019-09-12 17:23:39 (10.8 MB/s) - ‘/tmp/fedora-30-docker-base-20190903.qcow’ saved [1226745856/1226745856]
+--END--
+
+
+#---------------------------------------------------------------------
+# Check the image details.
+#[user@work01]
+
+    qemu-img \
+        info \
+            "${tempfile:?}"
+
+--START--
+image: /tmp/fedora-30-docker-base-20190903.qcow
+file format: qcow2
+virtual size: 16G (17179869184 bytes)
+disk size: 1.1G
+cluster_size: 65536
+Format specific information:
+    compat: 1.1
+    lazy refcounts: false
+    refcount bits: 16
+    corrupt: false
+--END--
+
+
+#---------------------------------------------------------------------
+# Get the image size.
+#[user@work01]
+
+    filesize=$(
+        qemu-img \
+            info \
+                "${tempfile:?}" \
+        | sed -n '
+            /^virtual size:/ {
+                s/^[^:]*:[[:space:]]*\([[:alnum:]]*\)[[:space:]]*.*/\1/
+                p
+                }
+            '
+        )
+
+    echo "Size [${filesize:?}]"
+
+--START--
+Size [16G]
+--END--
+
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@work01]
+
+    source "${HOME}/ischnura.settings"
+
+    virsh \
+        --connect "${libvirtcon:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${filename:?}" \
+            "${filesize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Upload the image into the new volume.
+#[user@trop02]
+
+    virsh \
+        --connect "${libvirtcon:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${filename:?}" \
+            "${tempfile:?}"
+
+
+# -----------------------------------------------------
+# Manually create the VMs.
+#[user@work01]
+
+    # TODO command line params for Ischnura
+
+    createvm
+
+--START--
+INFO : Node name [Ocelisean]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Ocelisean.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Araeri]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Araeri.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Nyderrad]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Nyderrad.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Rhoawien]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Rhoawien.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Gwirabard]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Gwirabard.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Boasien]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Boasien.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Falidon]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Falidon.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Brawia]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Brawia.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Glaubard]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Glaubard.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+--START--
+INFO : Node name [Legendamwen]
+INFO : Base name [fedora-30-docker-base-20190903.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+INFO : Disc name [Legendamwen.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+
+
+
+
+
+
+
