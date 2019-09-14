@@ -21,9 +21,6 @@
 
 version: '3'
 
-networks:
-    zookeeper:
-
 volumes:
     zklog:
     zkdata:
@@ -38,8 +35,22 @@ services:
             - "2888:2888"
             - "3888:3888"
         environment:
-            - ZOOKEEPER_SERVER_ID=${ZOOKEEPER_SERVER_ID}
-            - ZOOKEEPER_SERVERS=${ZOOKEEPER_SERVERS}
+            - ZOOKEEPER_SERVER_ID={{ groups['zookeepers'].index(inventory_hostname) + 1 }}
+            - ZOOKEEPER_SERVERS={%
+                for host in groups['zookeepers']
+                    -%}{%-
+                        if inventory_hostname == hostvars[host]['inventory_hostname']
+                    -%}
+                        0.0.0.0
+                    {%- else -%}
+                        {{- hostvars[host]['inventory_hostname'] -}}
+                    {%- endif -%}
+                        :2888:3888
+                    {%- if not loop.last -%}
+                        ;
+                    {%- endif -%}
+                {%- endfor %}
+
             - ZOOKEEPER_TICK_TIME=2000
             - ZOOKEEPER_INIT_LIMIT=5
             - ZOOKEEPER_SYNC_LIMIT=2
@@ -48,7 +59,5 @@ services:
         volumes:
             - "zklog:/var/lib/zookeeper/log"
             - "zkdata:/var/lib/zookeeper/data"
-        networks:
-            - zookeeper
 
 

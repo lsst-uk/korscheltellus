@@ -19,11 +19,14 @@
 # </meta:header>
 #
 
+#
+# Install the compose YAML file for Zookepers.
 ---
 - hosts: zookeepers
+  gather_facts: false
   tasks:
-    - name: Install compose ENV file
+    - name: Install compose YAML file
       template:
-        src:  zookeeper.env
-        dest: zookeeper.env
+        src:  zookeeper.yml
+        dest: zookeeper.yml
 

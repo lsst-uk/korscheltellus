@@ -18,11 +18,16 @@
 #   </meta:licence>
 # </meta:header>
 #
-
+# Simple test to check Docker CE is installed and running.
+#
 ---
 - hosts: zookeepers
   tasks:
-  - name: Check Docker
+   - name: Check Docker is installed.
+     dnf:
+       name: docker-ce
+       state: present
+  - name: Check Docker service is started.
     become: yes
     service:
       name: docker

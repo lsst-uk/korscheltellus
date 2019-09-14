@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM korscheltellus/fedora:2019.09.13
+FROM korscheltellus/fedora:2019.09.14
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #

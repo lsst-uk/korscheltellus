@@ -18,37 +18,45 @@
 #   </meta:licence>
 # </meta:header>
 #
+#
 
----
-- hosts: zookeepers
-  tasks:
-    - name: Check the Docker service is started.
-      become: yes
-      service:
-        name:  docker
-        state: started
+#
+# Different ways of doing the same thing.
 
-    - name: Install Python Docker libraries for Ansible to use.
-      become: true
-      pip:
-        name: [
-            'docker',
-            'docker-compose'
-            ]
+  - name: Remove Fedora Docker packages.
+    dnf:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - docker
+      - docker-common
+      - container-selinux
+      - docker-selinux
 
-    - name: Install our Zookeeper compose file.
-      template:
-        src:  zookeeper.yml
-        dest: zookeeper.yml
 
-    - name: Start our Zookeeper service.
-      docker_compose:
-        project_src:
-            '.'
-        files:
-          - zookeeper.yml
-        services:
-          - courtney
-        state:
-          present
+  - name: Remove Fedora Docker packages.
+    dnf:
+      name: [
+        'docker',
+        'docker-common',
+        'docker-selinux',
+        'container-selinux'
+        ]
+      state: absent
+
+
+#
+# Different ways of doing the same thing.
+
+  - name: Check Docker service is started.
+    become: yes
+    service:
+      name: docker
+      state: started
+
+
+  - name: Check Docker service is started.
+    systemd:
+      name:  docker
+      state: started
 

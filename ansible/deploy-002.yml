@@ -18,12 +18,51 @@
 #   </meta:licence>
 # </meta:header>
 #
-
+# Installing Docker Engine in Fedora via Ansible
+# http://www.mydailytutorials.com/docker-engine-fedora-25-ansible/
 ---
-- hosts: zookeepers
+- hosts: dockers
+  become: true
   tasks:
-    - name: Install compose YAML file
-      copy:
-        src:  zookeeper.yml
-        dest: zookeeper.yml
+
+  - name: Remove Fedora Docker packages.
+    dnf:
+      name: [
+        'docker',
+        'docker-common',
+        'docker-selinux',
+        'container-selinux'
+        ]
+      state: absent
+
+#    dnf:
+#      name: "{{ item }}"
+#      state: absent
+#    with_items:
+#      - docker
+#      - docker-common
+#      - container-selinux
+#      - docker-selinux
+
+  - name: Check dnf-plugins-core is installed.
+    dnf:
+      name:  dnf-plugins-core
+      state: present
+
+  - name: Add Docker-CE dnf repository.
+    shell: '
+        dnf config-manager \
+            --add-repo \
+                https://download.docker.com/linux/fedora/docker-ce.repo
+        '
+
+  - name: Check Docker-CE is installed.
+    dnf:
+     name:  docker-ce
+     state: latest
+
+  - name: Check Docker service is started.
+    systemd:
+      name:  docker
+      state: started
 
