@@ -23,9 +23,50 @@
 - hosts: workers
   gather_facts: false
   tasks:
-   - name: Check we can login.
-     ping:
 
-   - name: Check we can use sudo.
-     become: true
-     ping:
+    - name: Check we can use sudo.
+      become: true
+      ping:
+
+    - name: List the current partitions.
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
+    - name: Remove all the partitions in the list.
+      become: true
+      parted:
+        device: /dev/sdb
+        number: '{{ item.num }}'
+        state: absent
+      loop: '{{ sdb_info.partitions }}'
+
+    - name: Create data partitions.
+      become: true
+      parted:
+        device: /dev/sdb
+        number: "{{ item + 1 }}"
+        label:  gpt
+        state:  present
+        name:       "data-1-{{ item + 1 }}"
+        part_start: "{%- if (item == 0) -%}0%{%- else -%}{{ item }}TiB{%- endif -%}"
+        part_end:   "{%- if (item < 7)  -%}{{ item + 1 }}TiB{%- else -%}100%{%- endif -%}"
+      loop: "{{ range(0,8) | list }}"
+
+    - name: List the current partitions.
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
+
+

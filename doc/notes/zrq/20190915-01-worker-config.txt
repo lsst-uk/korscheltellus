@@ -65,6 +65,88 @@
         /etc/ansible/deploy-005.yml
 
     >   PLAY [workers] ******************************************************************************************************
+    >
+    >   TASK [Check we can login.] ******************************************************************************************
+    >   ok: [work01]
+    >
+    >   TASK [Check we can use sudo.] ***************************************************************************************
+    >   ok: [work01]
+    >
+    >   PLAY RECAP **********************************************************************************************************
+    >   work01                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+# https://unix.stackexchange.com/questions/53542/how-to-determine-the-filesystem-of-an-unmounted-device
+# https://unix.stackexchange.com/a/53552
+#[user@work01]
+
+    sudo parted --list
+
+    >   Model: ATA INTEL SSDSC2KG48 (scsi)
+    >   Disk /dev/sda: 480GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: msdos
+    >   Disk Flags:
+    >   
+    >   Number  Start   End    Size    Type      File system     Flags
+    >    1      1049kB  100GB  100GB   primary   ext4            boot
+    >    2      100GB   108GB  8000MB  primary   linux-swap(v1)
+    >    3      108GB   480GB  372GB   extended
+    >    5      108GB   148GB  40.0GB  logical   ext4
+    >    6      148GB   480GB  332GB   logical   ext4
+    >   
+    >   
+    >   Error: /dev/sdb: unrecognised disk label
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: unknown
+    >   Disk Flags:
+    >   
+    >   Error: /dev/sdc: unrecognised disk label
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdc: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: unknown
+    >   Disk Flags:
+    >   
+    >   Error: /dev/sdd: unrecognised disk label
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdd: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: unknown
+    >   Disk Flags:
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Add a task to create a filesystem.
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        ....
+        - name: Create a btrfs filesystem on /dev/sdb
+          become: true
+          filesystem:
+            dev:    /dev/sdb
+            fstype: btrfs
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+
+    >   PLAY [workers] ******************************************************************************************************
     >   
     >   TASK [Check we can login.] ******************************************************************************************
     >   ok: [work01]
@@ -72,18 +154,1170 @@
     >   TASK [Check we can use sudo.] ***************************************************************************************
     >   ok: [work01]
     >   
+    >   TASK [Create a btrfs filesystem on /dev/sdb] ************************************************************************
+    >   changed: [work01]
+    >   
     >   PLAY RECAP **********************************************************************************************************
-    >   work01                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   work01                     : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 
 # -----------------------------------------------------
 # -----------------------------------------------------
-# List the existing filesystems.
-# https://unix.stackexchange.com/questions/53542/how-to-determine-the-filesystem-of-an-unmounted-device
-# https://unix.stackexchange.com/a/53552
+# List the partitions on work01.
 #[user@work01]
 
-        sudo parted --list
+    sudo parted --list
+
+    >   Model: ATA INTEL SSDSC2KG48 (scsi)
+    >   Disk /dev/sda: 480GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: msdos
+    >   Disk Flags:
+    >   
+    >   Number  Start   End    Size    Type      File system     Flags
+    >    1      1049kB  100GB  100GB   primary   ext4            boot
+    >    2      100GB   108GB  8000MB  primary   linux-swap(v1)
+    >    3      108GB   480GB  372GB   extended
+    >    5      108GB   148GB  40.0GB  logical   ext4
+    >    6      148GB   480GB  332GB   logical   ext4
+    >   
+    >   
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: loop
+    >   Disk Flags:
+    >   
+    >   Number  Start  End     Size    File system  Flags
+    >    1      0.00B  8002GB  8002GB  btrfs
+    >   
+    >   
+    >   Error: /dev/sdc: unrecognised disk label
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdc: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: unknown
+    >   Disk Flags:
+    >   
+    >   Error: /dev/sdd: unrecognised disk label
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdd: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: unknown
+    >   Disk Flags:
+
+    #
+    # Yay - new partition.
+    #
+
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: loop
+    >   Disk Flags:
+    >   
+    >   Number  Start  End     Size    File system  Flags
+    >    1      0.00B  8002GB  8002GB  btrfs
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# What happens if we run it again ?
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   
+    >   PLAY [workers] ******************************************************************************************************
+    >   
+    >   TASK [Check we can login.] ******************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [Check we can use sudo.] ***************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [Create a btrfs filesystem on /dev/sdb] ************************************************************************
+    >   ok: [work01]
+    >   
+    >   PLAY RECAP **********************************************************************************************************
+    >   work01                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: loop
+    >   Disk Flags:
+    >   
+    >   Number  Start  End     Size    File system  Flags
+    >    1      0.00B  8002GB  8002GB  btrfs
+    >   ....
+
+    #
+    # Still good.
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Replace the btrfs task with one to partition the disc.
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+
+        ....
+        - name: Create a new 1TiB partition.
+          become: true
+          parted:
+            number:   1
+            device:   /dev/sdb
+            label:    gpt
+            name:     data-1-1
+            part_end: 1TiB
+            state:    present
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+
+    >   ....
+    >   TASK [Create a new 1TiB partition.] **********************************************************************************
+    >   changed: [work01]
+    >   
+    >   PLAY RECAP ***********************************************************************************************************
+    >   work01                     : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: gpt
+    >   Disk Flags:
+    >   
+    >   Number  Start  End  Size  File system  Name  Flags
+    >   ....
+
+    #
+    # Seems to create the table, but not the partition.
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the same playbook again.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   ....
+    >   TASK [Create a new 1TiB partition.] *********************************************************************************************************************************************************************************************************
+    >   changed: [work01]
+    >   
+    >   PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+    >   work01                     : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: gpt
+    >   Disk Flags:
+    >   
+    >   Number  Start   End     Size    File system  Name      Flags
+    >    1      1049kB  1100GB  1100GB               data-1-1
+
+    #
+    # Now we get a partition as well :-)
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the same playbook again.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   ....
+    >   TASK [Create a new 1TiB partition.] *********************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+    >   work01                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+    #
+    # No change.
+    # Implication is ... we need two steps.
+    # Run once (with label) to create the partition table.
+    # Run again (with end) to create the partition.
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Split the steps into three tasks.
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        - name: Create a gpt partition table.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 1
+            label:  gpt
+            state:  present
+
+        - name: Create partition 'data-1-1'.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 1
+            name:   data-1-1
+            part_end: 1TiB
+            state:  present
+
+        - name: Create partition 'data-1-2'.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 2
+            name:   data-1-2
+            part_end: 2TiB
+            state:  present
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+
+    >   ....
+    >   TASK [Create a gpt partition table.] ********************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [Create partition 'data-1-1'.] *********************************************************************************************************************************************************************************************************
+    >   changed: [work01]
+    >   
+    >   TASK [Create partition 'data-1-2'.] *********************************************************************************************************************************************************************************************************
+    >   changed: [work01]
+    >   
+    >   PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+    >   work01                     : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: msdos
+    >   Disk Flags:
+    >   
+    >   Number  Start   End     Size    Type     File system  Flags
+    >    1      1049kB  1100GB  1100GB  primary
+    >   ....
+
+    #
+    # Now we end up with just one msdos partition :-(
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Add label to the second and third tasks.
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        - name: Create a gpt partition table.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 1
+            label:  gpt
+            state:  present
+
+        - name: Create partition 'data-1-1'.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 1
+    +       label:  gpt
+            name:   data-1-1
+            part_end: 1TiB
+            state:  present
+
+        - name: Create partition 'data-1-2'.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 2
+    +       label:  gpt
+            name:   data-1-2
+            part_end: 2TiB
+            state:  present
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+
+    >   ....
+    >   TASK [Create a gpt partition table.] *********************************************************************************
+    >   changed: [work01]
+    >   
+    >   TASK [Create partition 'data-1-1'.] **********************************************************************************
+    >   fatal: [work01]: FAILED! => {"changed": false, "err": "Error: msdos disk labels do not support partition names.
+    >       Error: msdos disk labels do not support partition names.
+    >       Error while running parted script: /sbin/parted -s -m -a optimal /dev/sdb -- unit KiB name 1 '\"data-1-1\"'"
+    >   
+    >   PLAY RECAP ***********************************************************************************************************
+    >   work01                     : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: msdos
+    >   Disk Flags:
+    >   
+    >   Number  Start   End     Size    Type     File system  Flags
+    >    1      1049kB  1100GB  1100GB  primary
+    >   ....
+
+    #
+    # We still have the msdos partiton.
+    #
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Add a tast to list the existing partitions.
+# https://docs.ansible.com/ansible/latest/modules/parted_module.html
+#[user@desktop]
+
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: List the disc partitions.
+          become: true
+          parted:
+            device: /dev/sdb
+            unit:   GiB
+          register: sdb_info
+
+        - debug:
+            msg: Partitions {{ sdb_info }}
+
+        ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+
+    >   ....
+    >   TASK [debug] ****************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7630885.0, 'unit': 'mib', 'table': 'msdos', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 1.0, 'end': 1048576.0, 'size': 1048575.0, 'fstype': '', 'name': '', 'flags': [], 'unit': 'mib'}], 'script': \"unit 'MiB' print\", 'failed': False}"
+    >   }
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Add a tast to delete the existing partitions.
+# https://docs.ansible.com/ansible/latest/modules/parted_module.html
+#[user@desktop]
+
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: List the disc partitions.
+          become: true
+          parted:
+            device: /dev/sdb
+            unit:   GiB
+          register: sdb_info
+
+        - debug:
+            msg: Partitions {{ sdb_info }}
+
+        - name: Remove all partitions from disk
+          parted:
+            device: /dev/sdb
+            number: '{{ item.num }}'
+            state: absent
+          loop: '{{ sdb_info.partitions }}'
+
+        ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+
+    >   TASK [debug] ****************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'msdos', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': '', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   
+    >   TASK [Remove all the partitions in the list.] *******************************************************************************************
+    >   changed: [work01] => (item={'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': '', 'flags': [], 'unit': 'gib'})
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: msdos
+    >   Disk Flags:
+    >   
+    >   Number  Start  End  Size  Type  File system  Flags
+    >   
+    >   ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Add the tast to create a new gpt partition table.
+#[user@desktop]
+
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: List the disc partitions.
+          parted:
+            device: /dev/sdb
+            unit:   GiB
+          register: sdb_info
+
+        - debug:
+            msg: Partitions {{ sdb_info }}
+
+        - name: Remove all partitions from disk
+          parted:
+            device: /dev/sdb
+            number: '{{ item.num }}'
+            state: absent
+          loop: '{{ sdb_info.partitions }}'
+
+        - name: Create a gpt partition table.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 1
+            label:  gpt
+            state:  present
+
+        ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+
+    >   TASK [debug] ****************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'msdos', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   
+    >   TASK [Remove all the partitions in the list.] *******************************************************************************************
+    >   
+    >   TASK [Create a gpt partition table.] ****************************************************************************************************
+    >   changed: [work01]
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: gpt
+    >   Disk Flags:
+    >   
+    >   Number  Start   End     Size    File system  Name     Flags
+    >    1      1049kB  8002GB  8002GB               primary
+    >   ....
+
+    #
+    # Almost, but not quite.
+    # We end up with one full disc partition.
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Add the size and name to the gpt partition task.
+#[user@desktop]
+
+
+    gedit deploy-005.yml
+
+        ....
+
+    - name: List the disc partitions.
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
+    - name: Remove all the partitions in the list.
+      become: true
+      parted:
+        device: /dev/sdb
+        number: '{{ item.num }}'
+        state: absent
+      loop: '{{ sdb_info.partitions }}'
+
+    - name: Create gpt partition 'data-1-1'.
+      become: true
+      parted:
+        device: /dev/sdb
+        number: 1
+        label:  gpt
+        name:   data-1-1
+        part_end: 1TiB
+        state:  present
+
+    - name: Create gpt partition 'data-1-2'.
+      become: true
+      parted:
+        device: /dev/sdb
+        number: 2
+        label:  gpt
+        name:   data-1-2
+        part_end: 1TiB
+        state:  present
+
+    - name: List the disc partitions.
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
+        ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   TASK [debug] ********************************************************************************************************************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'gpt', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 0.0, 'end': 7452.0, 'size': 7452.0, 'fstype': '', 'name': 'primary', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   
+    >   TASK [Remove all the partitions in the list.] ***********************************************************************************************************************************************************************************************
+    >   changed: [work01] => (item={'num': 1, 'begin': 0.0, 'end': 7452.0, 'size': 7452.0, 'fstype': '', 'name': 'primary', 'flags': [], 'unit': 'gib'})
+    >   
+    >   TASK [Create gpt partition 'data-1-1'.] *****************************************************************************************************************************************************************************************************
+    >   changed: [work01]
+    >   
+    >   TASK [Create gpt partition 'data-1-2'.] *****************************************************************************************************************************************************************************************************
+    >   fatal: [work01]: FAILED! => {"changed": false, "err": "Error: You requested a partition from 0.00kiB to 1073741824kiB (sectors 0..2147483647).\nThe closest location we can manage is 17.0kiB to 1024kiB (sectors 34..2047).\n", "msg": "Error while running parted script: /sbin/parted -s -m -a optimal /dev/sdb -- unit KiB mkpart primary 0% 1TiB", "out": "", "rc": 1}
+    >   ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Fix the part_start and part_end on the second partiton.
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: Create gpt partition 'data-1-2'.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: 2
+            label:  gpt
+            name:   data-1-2
+            part_start: 1TiB
+            part_end:   2TiB
+            state:  present
+
+        ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   ....
+    >   TASK [List the disc partitions.] ************************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [debug] ********************************************************************************************************************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'gpt', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-1', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   
+    >   TASK [Remove all the partitions in the list.] ***********************************************************************************************************************************************************************************************
+    >   changed: [work01] => (item={'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-1', 'flags': [], 'unit': 'gib'})
+    >   
+    >   TASK [Create gpt partition 'data-1-1'.] *****************************************************************************************************************************************************************************************************
+    >   changed: [work01]
+    >   
+    >   TASK [Create gpt partition 'data-1-2'.] *****************************************************************************************************************************************************************************************************
+    >   changed: [work01]
+    >   
+    >   TASK [List the disc partitions.] ************************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [debug] ********************************************************************************************************************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'gpt', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-1', 'flags': [], 'unit': 'gib'}, {'num': 2, 'begin': 1024.0, 'end': 2048.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-2', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: gpt
+    >   Disk Flags:
+    >   
+    >   Number  Start   End     Size    File system  Name      Flags
+    >    1      1049kB  1100GB  1100GB               data-1-1
+    >    2      1100GB  2199GB  1100GB               data-1-2
+    >   ....
+
+    #
+    # Looks like it worked :-)
+    #
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the block devices on '/dev/sdb'.
+#[user@work01]
+
+    lsblk  "/dev/sdb"
+
+    >   NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+    >   sdb      8:16   0  7.3T  0 disk
+    >   ├─sdb1   8:17   0 1024G  0 part
+    >   └─sdb2   8:18   0    1T  0 part
+
+
+# -----------------------------------------------------
+# List the block device UUIDs on '/dev/sdb'.
+#[user@work01]
+
+    lsblk --output UUID  "/dev/sdb"
+
+    >   UUID
+    >   9f134040-fc73-43ff-8152-f8c31e3bd0c5
+    >   9f134040-fc73-43ff-8152-f8c31e3bd0c5
+    >   9f134040-fc73-43ff-8152-f8c31e3bd0c5
 
 
 
+# -----------------------------------------------------
+# List the block device names and UUIDs on '/dev/sdb'.
+#[user@work01]
+
+    lsblk --output 'NAME,UUID'  "/dev/sdb"
+
+    >   NAME   UUID
+    >   sdb    9f134040-fc73-43ff-8152-f8c31e3bd0c5
+    >   ├─sdb1 9f134040-fc73-43ff-8152-f8c31e3bd0c5
+    >   └─sdb2 9f134040-fc73-43ff-8152-f8c31e3bd0c5
+
+
+# -----------------------------------------------------
+# List the block device UUID for partition '/dev/sdb1'.
+#[user@work01]
+
+    lsblk --output UUID  "/dev/sdb1"
+
+    >   UUID
+    >   9f134040-fc73-43ff-8152-f8c31e3bd0c5
+
+
+# -----------------------------------------------------
+# List the block device names and UUIDs in JSON format.
+#[user@work01]
+
+    lsblk --output 'NAME,UUID' --json "/dev/sdb"
+
+    >   {
+    >      "blockdevices": [
+    >         {"name": "sdb", "uuid": "9f134040-fc73-43ff-8152-f8c31e3bd0c5",
+    >            "children": [
+    >               {"name": "sdb1", "uuid": "9f134040-fc73-43ff-8152-f8c31e3bd0c5"},
+    >               {"name": "sdb2", "uuid": "9f134040-fc73-43ff-8152-f8c31e3bd0c5"}
+    >            ]
+    >         }
+    >      ]
+    >   }
+
+
+# -----------------------------------------------------
+# List the block device topology for work01.
+#[user@work01]
+
+    lsblk --topology --json
+
+    >   {
+    >      "blockdevices": [
+    >         {"name": "sda", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "0", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B",
+    >            "children": [
+    >               {"name": "sda1", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "0", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"},
+    >               {"name": "sda2", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "0", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"},
+    >               {"name": "sda3", "alignment": "1024", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "0", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"},
+    >               {"name": "sda5", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "0", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"},
+    >               {"name": "sda6", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "0", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"}
+    >            ]
+    >         },
+    >         {"name": "sdb", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "1", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B",
+    >            "children": [
+    >               {"name": "sdb1", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "1", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"},
+    >               {"name": "sdb2", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "1", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"}
+    >            ]
+    >         },
+    >         {"name": "sdc", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "1", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"},
+    >         {"name": "sdd", "alignment": "0", "min-io": "4096", "opt-io": "0", "phy-sec": "4096", "log-sec": "512", "rota": "1", "sched": "cfq", "rq-size": "128", "ra": "128", "wsame": "0B"}
+    >      ]
+    >   }
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Refactor our playbook to use a loop.
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: Create gpt partitions.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: "{{ item }}"
+            label:  gpt
+            state:  present
+            name:       "'data-1-' + {{  + item }}"
+            part_start: "({{ item }} - 1) + 'TiB'"
+            part_end:   "{{ item }} + 'TiB'"
+          loop: "{{ [1,2,3] }}"
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   TASK [Create gpt partitions.] ***************************************************************************************************************************
+    >   failed: [work01] (item=1) => {"ansible_loop_var": "item", "changed": false, "item": 1, "msg": "Error interpreting parted size output: '(1 - 1) + 'TiB''"}
+    >   failed: [work01] (item=2) => {"ansible_loop_var": "item", "changed": false, "item": 2, "msg": "Error interpreting parted size output: '(2 - 1) + 'TiB''"}
+    >   failed: [work01] (item=3) => {"ansible_loop_var": "item", "changed": false, "item": 3, "msg": "Error interpreting parted size output: '(3 - 1) + 'TiB''"}
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Fix the playbook ..
+# https://stackoverflow.com/questions/33505521/ansible-can-i-use-arithmetic-when-setting-a-variable-value/33510646
+# https://stackoverflow.com/questions/31186874/proper-way-to-concatenate-variable-strings
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: Create gpt partitions.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: "{{ item }}"
+            label:  gpt
+            state:  present
+            name:       "data-1-{{ item }}"
+            part_start: "{%- if item != 1 -%}{{ item - 1 }}TiB{%- else -%}0%{%- endif -%}"
+            part_end:   "{{ item }}TiB"
+          loop: "{{ [1,2,3] }}"
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   TASK [List the current partitions.] ************************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [debug] ********************************************************************************************************************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'gpt', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 1024.0, 'end': 2048.0, 'size': 1024.0, 'fstype': '', 'name': 'primary', 'flags': [], 'unit': 'gib'}, {'num': 2, 'begin': 2048.0, 'end': 3072.0, 'size': 1024.0, 'fstype': '', 'name': 'primary', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   
+    >   TASK [Remove all the partitions in the list.] ***********************************************************************************************************************************************************************************************
+    >   changed: [work01] => (item={'num': 1, 'begin': 1024.0, 'end': 2048.0, 'size': 1024.0, 'fstype': '', 'name': 'primary', 'flags': [], 'unit': 'gib'})
+    >   changed: [work01] => (item={'num': 2, 'begin': 2048.0, 'end': 3072.0, 'size': 1024.0, 'fstype': '', 'name': 'primary', 'flags': [], 'unit': 'gib'})
+    >   
+    >   TASK [Create gpt partitions.] ***************************************************************************************************************************************************************************************************************
+    >   changed: [work01] => (item=1)
+    >   changed: [work01] => (item=2)
+    >   changed: [work01] => (item=3)
+    >   
+    >   TASK [List the current partitions.] *********************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [debug] ********************************************************************************************************************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'gpt', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-1', 'flags': [], 'unit': 'gib'}, {'num': 2, 'begin': 1024.0, 'end': 2048.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-2', 'flags': [], 'unit': 'gib'}, {'num': 3, 'begin': 2048.0, 'end': 3072.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-3', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   --END
+    >   
+    >   # -----------------------------------------------------
+    >   # -----------------------------------------------------
+    >   # List the partitions on work01.
+    >   #[user@work01]
+    >   
+    >       sudo parted --list
+    >   
+    >   ....
+    >   
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: gpt
+    >   Disk Flags:
+    >   
+    >   Number  Start   End     Size    File system  Name      Flags
+    >    1      1049kB  1100GB  1100GB               data-1-1
+    >    2      1100GB  2199GB  1100GB               data-1-2
+    >    3      2199GB  3299GB  1100GB               data-1-3
+    >   ....
+    >   --END
+    >   
+    >       #
+    >       # Looks like that works :-)
+    >       #
+    >   
+    >   
+    >   # -----------------------------------------------------
+    >   # -----------------------------------------------------
+    >   # Use a range for the partition numbers ..
+    >   #[user@desktop]
+    >   
+    >       gedit deploy-005.yml
+    >   
+    >           ....
+    >   
+    >           - name: Create gpt partitions.
+    >             become: true
+    >             parted:
+    >               device: /dev/sdb
+    >               number: "{{ item }}"
+    >               label:  gpt
+    >               state:  present
+    >               name:       "data-1-{{ item }}"
+    >               part_start: "{%- if (item != 1) -%}{{ item - 1 }}TiB{%- else -%}0%{%- endif -%}"
+    >               part_end:   "{{ item }}TiB"
+    >             loop: "{{ range(1,8) | list }}"
+    >   
+    >   
+    >   # -----------------------------------------------------
+    >   # -----------------------------------------------------
+    >   # Run our playbook.
+    >   #[ansible@ansible-client]
+    >   
+    >       ansible-playbook \
+    >           --inventory /etc/ansible/hosts.yml \
+    >           /etc/ansible/deploy-005.yml
+    >   
+    >   ....
+    >   TASK [Create gpt partitions.] ***************************************************************************************************************************************************************************************************************
+    >   changed: [work01] => (item=1)
+    >   changed: [work01] => (item=2)
+    >   changed: [work01] => (item=3)
+    >   changed: [work01] => (item=4)
+    >   changed: [work01] => (item=5)
+    >   changed: [work01] => (item=6)
+    >   changed: [work01] => (item=7)
+    >   
+    >   TASK [List the current partitions.] *********************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [debug] ********************************************************************************************************************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'gpt', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-1', 'flags': [], 'unit': 'gib'}, {'num': 2, 'begin': 1024.0, 'end': 2048.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-2', 'flags': [], 'unit': 'gib'}, {'num': 3, 'begin': 2048.0, 'end': 3072.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-3', 'flags': [], 'unit': 'gib'}, {'num': 4, 'begin': 3072.0, 'end': 4096.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-4', 'flags': [], 'unit': 'gib'}, {'num': 5, 'begin': 4096.0, 'end': 5120.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-5', 'flags': [], 'unit': 'gib'}, {'num': 6, 'begin': 5120.0, 'end': 6144.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-6', 'flags': [], 'unit': 'gib'}, {'num': 7, 'begin': 6144.0, 'end': 7168.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-7', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   ....
+
+    #
+    # Almost .. Only created 7 partitions not 8.
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Use a range for the partition numbers ..
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: Create gpt partitions.
+          become: true
+          parted:
+            device: /dev/sdb
+    ~       number: "{{ item + 1 }}"
+            label:  gpt
+            state:  present
+    ~       name:       "data-1-{{ item + 1 }}"
+    ~       part_start: "{{ item }}{%- if (item == 0) -%}%{%- else -%}TiB{%- endif -%}"
+    ~       part_end:   "{{ item + 1 }}TiB"
+    ~     loop: "{{ range(0,8) | list }}"
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   ....
+    >   TASK [Create gpt partitions.] ***************************************************************************************************************************************************************************************************************
+    >   changed: [work01] => (item=0)
+    >   changed: [work01] => (item=1)
+    >   changed: [work01] => (item=2)
+    >   changed: [work01] => (item=3)
+    >   changed: [work01] => (item=4)
+    >   changed: [work01] => (item=5)
+    >   changed: [work01] => (item=6)
+    >   failed: [work01] (item=7) => {"ansible_loop_var": "item", "changed": false, "err": "Error: The location 8TiB is outside of the device /dev/sdb.\n", "item": 7, "msg": "Error while running parted script: /sbin/parted -s -m -a optimal /dev/sdb -- unit KiB mkpart primary 7TiB 8TiB", "out": "", "rc": 1}
+    >   ....
+
+    #
+    # Almost ... just too much for the last one.
+    #
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Use a percent for the last partition.
+#[user@desktop]
+
+    gedit deploy-005.yml
+
+        ....
+
+        - name: Create gpt partitions.
+          become: true
+          parted:
+            device: /dev/sdb
+            number: "{{ item + 1 }}"
+            label:  gpt
+            state:  present
+            name:       "data-1-{{ item + 1 }}"
+            part_start: "{{ item }}{%- if (item == 0) -%}%{%- else -%}TiB{%- endif -%}"
+    ~       part_end:   "{%- if (item < 7) -%}{{ item + 1 }}TiB{%- else -%}100%{%- endif -%}"
+          loop: "{{ range(0,8) | list }}"
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our playbook.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+    >   ....
+    >   TASK [Create gpt partitions.] ***************************************************************************************************************************************************************************************************************
+    >   changed: [work01] => (item=0)
+    >   changed: [work01] => (item=1)
+    >   changed: [work01] => (item=2)
+    >   changed: [work01] => (item=3)
+    >   changed: [work01] => (item=4)
+    >   changed: [work01] => (item=5)
+    >   changed: [work01] => (item=6)
+    >   changed: [work01] => (item=7)
+    >   
+    >   TASK [List the current partitions.] *********************************************************************************************************************************************************************************************************
+    >   ok: [work01]
+    >   
+    >   TASK [debug] ********************************************************************************************************************************************************************************************************************************
+    >   ok: [work01] => {
+    >       "msg": "Partitions {'changed': False, 'disk': {'dev': '/dev/sdb', 'size': 7452.0, 'unit': 'gib', 'table': 'gpt', 'model': 'ATA HGST HUS728T8TAL', 'logical_block': 512, 'physical_block': 4096}, 'partitions': [{'num': 1, 'begin': 0.0, 'end': 1024.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-1', 'flags': [], 'unit': 'gib'}, {'num': 2, 'begin': 1024.0, 'end': 2048.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-2', 'flags': [], 'unit': 'gib'}, {'num': 3, 'begin': 2048.0, 'end': 3072.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-3', 'flags': [], 'unit': 'gib'}, {'num': 4, 'begin': 3072.0, 'end': 4096.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-4', 'flags': [], 'unit': 'gib'}, {'num': 5, 'begin': 4096.0, 'end': 5120.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-5', 'flags': [], 'unit': 'gib'}, {'num': 6, 'begin': 5120.0, 'end': 6144.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-6', 'flags': [], 'unit': 'gib'}, {'num': 7, 'begin': 6144.0, 'end': 7168.0, 'size': 1024.0, 'fstype': '', 'name': 'data-1-7', 'flags': [], 'unit': 'gib'}, {'num': 8, 'begin': 7168.0, 'end': 7452.0, 'size': 284.0, 'fstype': '', 'name': 'data-1-8', 'flags': [], 'unit': 'gib'}], 'script': \"unit 'GiB' print\", 'failed': False}"
+    >   }
+    >   ....
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the partitions on work01.
+#[user@work01]
+
+    sudo parted --list
+
+    >   ....
+    >   Model: ATA HGST HUS728T8TAL (scsi)
+    >   Disk /dev/sdb: 8002GB
+    >   Sector size (logical/physical): 512B/4096B
+    >   Partition Table: gpt
+    >   Disk Flags:
+    >   
+    >   Number  Start   End     Size    File system  Name      Flags
+    >    1      1049kB  1100GB  1100GB               data-1-1
+    >    2      1100GB  2199GB  1100GB               data-1-2
+    >    3      2199GB  3299GB  1100GB               data-1-3
+    >    4      3299GB  4398GB  1100GB               data-1-4
+    >    5      4398GB  5498GB  1100GB               data-1-5
+    >    6      5498GB  6597GB  1100GB               data-1-6
+    >    7      6597GB  7697GB  1100GB               data-1-7
+    >    8      7697GB  8002GB  305GB                data-1-8
+    >   ....
+    >   --END
+    >   
+    >       #
+    >       # Looks like that works :-)
+    >       # Last partition ends up as a stub though :-(
+    >       #
+    >   
+    >       #
+    >       # Next :
+    >       # - Use an include to iterate over the three discs.
+    >       # - Use a count param and percentages rather than exact sizes to get an even spread.
+    >       #
+    >   
