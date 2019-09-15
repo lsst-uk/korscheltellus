@@ -63,24 +63,22 @@
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-001.yml
 
---START--
-PLAY [zookeepers] ***************************************************************************************************
-
-TASK [Gathering Facts] **********************************************************************************************
-ok: [Nyderrad]
-ok: [Araeri]
-ok: [Ocelisean]
-
-TASK [Check Docker] *************************************************************************************************
-ok: [Nyderrad]
-ok: [Ocelisean]
-ok: [Araeri]
-
-PLAY RECAP **********************************************************************************************************
-Araeri                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Nyderrad                   : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Ocelisean                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
---END--
+    >   PLAY [zookeepers] ***************************************************************************************************
+    >   
+    >   TASK [Gathering Facts] **********************************************************************************************
+    >   ok: [Nyderrad]
+    >   ok: [Araeri]
+    >   ok: [Ocelisean]
+    >   
+    >   TASK [Check Docker] *************************************************************************************************
+    >   ok: [Nyderrad]
+    >   ok: [Ocelisean]
+    >   ok: [Araeri]
+    >   
+    >   PLAY RECAP **********************************************************************************************************
+    >   Araeri                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Nyderrad                   : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Ocelisean                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 
 # -----------------------------------------------------
@@ -91,24 +89,22 @@ Ocelisean                  : ok=2    changed=0    unreachable=0    failed=0    s
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-002.yml
 
---START--
-PLAY [zookeepers] ***************************************************************************************************
-
-TASK [Gathering Facts] **********************************************************************************************
-ok: [Nyderrad]
-ok: [Araeri]
-ok: [Ocelisean]
-
-TASK [Install compose YAML file] ************************************************************************************
-changed: [Araeri]
-changed: [Nyderrad]
-changed: [Ocelisean]
-
-PLAY RECAP **********************************************************************************************************
-Araeri                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Nyderrad                   : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Ocelisean                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
---END--
+    >   PLAY [zookeepers] ***************************************************************************************************
+    >   
+    >   TASK [Gathering Facts] **********************************************************************************************
+    >   ok: [Nyderrad]
+    >   ok: [Araeri]
+    >   ok: [Ocelisean]
+    >   
+    >   TASK [Install compose YAML file] ************************************************************************************
+    >   changed: [Araeri]
+    >   changed: [Nyderrad]
+    >   changed: [Ocelisean]
+    >   
+    >   PLAY RECAP **********************************************************************************************************
+    >   Araeri                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Nyderrad                   : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Ocelisean                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 
 # -----------------------------------------------------
@@ -119,24 +115,22 @@ Ocelisean                  : ok=2    changed=1    unreachable=0    failed=0    s
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-003.yml
 
---START--
-PLAY [zookeepers] ***************************************************************************************************************************************************************************************************************************
-
-TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
-ok: [Ocelisean]
-ok: [Nyderrad]
-ok: [Araeri]
-
-TASK [Install compose ENV file] *************************************************************************************************************************************************************************************************************
-changed: [Nyderrad]
-changed: [Araeri]
-changed: [Ocelisean]
-
-PLAY RECAP **********************************************************************************************************************************************************************************************************************************
-Araeri                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Nyderrad                   : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Ocelisean                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
---END--
+    >   PLAY [zookeepers] ***************************************************************************************************************************************************************************************************************************
+    >   
+    >   TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+    >   ok: [Ocelisean]
+    >   ok: [Nyderrad]
+    >   ok: [Araeri]
+    >   
+    >   TASK [Install compose ENV file] *************************************************************************************************************************************************************************************************************
+    >   changed: [Nyderrad]
+    >   changed: [Araeri]
+    >   changed: [Ocelisean]
+    >   
+    >   PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+    >   Araeri                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Nyderrad                   : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Ocelisean                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 
 # -----------------------------------------------------
@@ -154,89 +148,87 @@ Ocelisean                  : ok=2    changed=1    unreachable=0    failed=0    s
         cat ~/zookeeper.env
         '
 
---START--
-Fri 13 Sep 04:53:19 BST 2019
-Araeri
----- zookeeper.yml ----
-#
-# <meta:header>
-#   <meta:licence>
-#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
-#
-#     This information is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     This information is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#   </meta:licence>
-# </meta:header>
-#
-
-version: '3'
-
-networks:
-    zookeeper:
-
-volumes:
-    zklog:
-    zkdata:
-
-services:
-
-    courtney:
-        image:
-            confluentinc/cp-zookeeper:4.1.1
-        ports:
-            - "2181:2181"
-            - "2888:2888"
-            - "3888:3888"
-        environment:
-            - ZOOKEEPER_SERVER_ID=${ZOOKEEPER_SERVER_ID}
-            - ZOOKEEPER_SERVERS=${ZOOKEEPER_SERVERS}
-            - ZOOKEEPER_TICK_TIME=2000
-            - ZOOKEEPER_INIT_LIMIT=5
-            - ZOOKEEPER_SYNC_LIMIT=2
-            - ZOOKEEPER_CLIENT_PORT=2181
-            - ZOOKEEPER_CLIENT_PORT_ADDRESS=0.0.0.0
-        volumes:
-            - "zklog:/var/lib/zookeeper/log"
-            - "zkdata:/var/lib/zookeeper/data"
-        networks:
-            - zookeeper
-
-
----- zookeeper.env ----
-#
-# <meta:header>
-#   <meta:licence>
-#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
-#
-#     This information is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     This information is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#   </meta:licence>
-# </meta:header>
-#
-
-ZOOKEEPER_SERVER_ID=2
-ZOOKEEPER_SERVERS=Ocelisean:2888:3888;0.0.0.0:2888:3888;Nyderrad:2888:3888
---END--
+    >   Fri 13 Sep 04:53:19 BST 2019
+    >   Araeri
+    >   ---- zookeeper.yml ----
+    >   #
+    >   # <meta:header>
+    >   #   <meta:licence>
+    >   #     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+    >   #
+    >   #     This information is free software: you can redistribute it and/or modify
+    >   #     it under the terms of the GNU General Public License as published by
+    >   #     the Free Software Foundation, either version 3 of the License, or
+    >   #     (at your option) any later version.
+    >   #
+    >   #     This information is distributed in the hope that it will be useful,
+    >   #     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    >   #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    >   #     GNU General Public License for more details.
+    >   #
+    >   #     You should have received a copy of the GNU General Public License
+    >   #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    >   #   </meta:licence>
+    >   # </meta:header>
+    >   #
+    >   
+    >   version: '3'
+    >   
+    >   networks:
+    >       zookeeper:
+    >   
+    >   volumes:
+    >       zklog:
+    >       zkdata:
+    >   
+    >   services:
+    >   
+    >       courtney:
+    >           image:
+    >               confluentinc/cp-zookeeper:4.1.1
+    >           ports:
+    >               - "2181:2181"
+    >               - "2888:2888"
+    >               - "3888:3888"
+    >           environment:
+    >               - ZOOKEEPER_SERVER_ID=${ZOOKEEPER_SERVER_ID}
+    >               - ZOOKEEPER_SERVERS=${ZOOKEEPER_SERVERS}
+    >               - ZOOKEEPER_TICK_TIME=2000
+    >               - ZOOKEEPER_INIT_LIMIT=5
+    >               - ZOOKEEPER_SYNC_LIMIT=2
+    >               - ZOOKEEPER_CLIENT_PORT=2181
+    >               - ZOOKEEPER_CLIENT_PORT_ADDRESS=0.0.0.0
+    >           volumes:
+    >               - "zklog:/var/lib/zookeeper/log"
+    >               - "zkdata:/var/lib/zookeeper/data"
+    >           networks:
+    >               - zookeeper
+    >   
+    >   
+    >   ---- zookeeper.env ----
+    >   #
+    >   # <meta:header>
+    >   #   <meta:licence>
+    >   #     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+    >   #
+    >   #     This information is free software: you can redistribute it and/or modify
+    >   #     it under the terms of the GNU General Public License as published by
+    >   #     the Free Software Foundation, either version 3 of the License, or
+    >   #     (at your option) any later version.
+    >   #
+    >   #     This information is distributed in the hope that it will be useful,
+    >   #     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    >   #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    >   #     GNU General Public License for more details.
+    >   #
+    >   #     You should have received a copy of the GNU General Public License
+    >   #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    >   #   </meta:licence>
+    >   # </meta:header>
+    >   #
+    >   
+    >   ZOOKEEPER_SERVER_ID=2
+    >   ZOOKEEPER_SERVERS=Ocelisean:2888:3888;0.0.0.0:2888:3888;Nyderrad:2888:3888
 
 
 

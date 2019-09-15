@@ -65,16 +65,14 @@
 
     wget -O "${tempfile:?}" "http://data.metagrid.co.uk/ischnura/base/${filename:?}"
 
---START--
---2019-09-12 17:21:51--  http://data.metagrid.co.uk/ischnura/base/fedora-30-docker-base-20190903.qcow
-Resolving data.metagrid.co.uk (data.metagrid.co.uk)... 178.79.157.93, 2a01:7e00::f03c:91ff:fedf:f8b
-Connecting to data.metagrid.co.uk (data.metagrid.co.uk)|178.79.157.93|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 1226745856 (1.1G) [text/plain]
-Saving to: ‘/tmp/fedora-30-docker-base-20190903.qcow’
-....
-2019-09-12 17:23:39 (10.8 MB/s) - ‘/tmp/fedora-30-docker-base-20190903.qcow’ saved [1226745856/1226745856]
---END--
+    >   --2019-09-12 17:21:51--  http://data.metagrid.co.uk/ischnura/base/fedora-30-docker-base-20190903.qcow
+    >   Resolving data.metagrid.co.uk (data.metagrid.co.uk)... 178.79.157.93, 2a01:7e00::f03c:91ff:fedf:f8b
+    >   Connecting to data.metagrid.co.uk (data.metagrid.co.uk)|178.79.157.93|:80... connected.
+    >   HTTP request sent, awaiting response... 200 OK
+    >   Length: 1226745856 (1.1G) [text/plain]
+    >   Saving to: ‘/tmp/fedora-30-docker-base-20190903.qcow’
+    >   ....
+    >   2019-09-12 17:23:39 (10.8 MB/s) - ‘/tmp/fedora-30-docker-base-20190903.qcow’ saved [1226745856/1226745856]
 
 
 #---------------------------------------------------------------------
@@ -85,18 +83,16 @@ Saving to: ‘/tmp/fedora-30-docker-base-20190903.qcow’
         info \
             "${tempfile:?}"
 
---START--
-image: /tmp/fedora-30-docker-base-20190903.qcow
-file format: qcow2
-virtual size: 16G (17179869184 bytes)
-disk size: 1.1G
-cluster_size: 65536
-Format specific information:
-    compat: 1.1
-    lazy refcounts: false
-    refcount bits: 16
-    corrupt: false
---END--
+    >   image: /tmp/fedora-30-docker-base-20190903.qcow
+    >   file format: qcow2
+    >   virtual size: 16G (17179869184 bytes)
+    >   disk size: 1.1G
+    >   cluster_size: 65536
+    >   Format specific information:
+    >       compat: 1.1
+    >       lazy refcounts: false
+    >       refcount bits: 16
+    >       corrupt: false
 
 
 #---------------------------------------------------------------------
@@ -117,9 +113,7 @@ Format specific information:
 
     echo "Size [${filesize:?}]"
 
---START--
-Size [16G]
---END--
+    >   Size [16G]
 
 
 #---------------------------------------------------------------------
@@ -156,85 +150,65 @@ Size [16G]
 
     createvm
 
---START--
-INFO : Node name [Ocelisean]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Ocelisean.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Ocelisean]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Ocelisean.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Araeri]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Araeri.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Araeri]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Araeri.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Nyderrad]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Nyderrad.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Nyderrad]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Nyderrad.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Rhoawien]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Rhoawien.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Rhoawien]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Rhoawien.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Gwirabard]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Gwirabard.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Gwirabard]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Gwirabard.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Boasien]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Boasien.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Boasien]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Boasien.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Falidon]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Falidon.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Falidon]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Falidon.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Brawia]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Brawia.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Brawia]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Brawia.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Glaubard]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Glaubard.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Glaubard]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Glaubard.qcow]
+    >   INFO : Disc size [16GiB]
 
---START--
-INFO : Node name [Legendamwen]
-INFO : Base name [fedora-30-docker-base-20190903.qcow]
-INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
-INFO : Disc name [Legendamwen.qcow]
-INFO : Disc size [16GiB]
---END--
+    >   INFO : Node name [Legendamwen]
+    >   INFO : Base name [fedora-30-docker-base-20190903.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-30-docker-base-20190903.qcow]
+    >   INFO : Disc name [Legendamwen.qcow]
+    >   INFO : Disc size [16GiB]
 
 
 

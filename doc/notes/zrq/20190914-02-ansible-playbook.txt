@@ -65,34 +65,32 @@
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-004.yml
 
---START--
-PLAY [zookeepers] ***************************************************************************************************
-
-TASK [Gathering Facts] **********************************************************************************************
-ok: [Araeri]
-ok: [Ocelisean]
-ok: [Nyderrad]
-
-TASK [Check the Docker service is started.] *************************************************************************
-ok: [Ocelisean]
-ok: [Araeri]
-ok: [Nyderrad]
-
-TASK [Install our Zookeeper compose file.] **************************************************************************
-changed: [Araeri]
-changed: [Nyderrad]
-changed: [Ocelisean]
-
-TASK [Start our Zookeeper service.] *********************************************************************************
-fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Ocelisean's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
-fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Araeri's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
-fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Nyderrad's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
-
-PLAY RECAP **********************************************************************************************************
-Araeri                     : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
-Nyderrad                   : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
-Ocelisean                  : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
---END--
+    >   PLAY [zookeepers] ***************************************************************************************************
+    >   
+    >   TASK [Gathering Facts] **********************************************************************************************
+    >   ok: [Araeri]
+    >   ok: [Ocelisean]
+    >   ok: [Nyderrad]
+    >   
+    >   TASK [Check the Docker service is started.] *************************************************************************
+    >   ok: [Ocelisean]
+    >   ok: [Araeri]
+    >   ok: [Nyderrad]
+    >   
+    >   TASK [Install our Zookeeper compose file.] **************************************************************************
+    >   changed: [Araeri]
+    >   changed: [Nyderrad]
+    >   changed: [Ocelisean]
+    >   
+    >   TASK [Start our Zookeeper service.] *********************************************************************************
+    >   fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Ocelisean's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
+    >   fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Araeri's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
+    >   fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Nyderrad's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
+    >   
+    >   PLAY RECAP **********************************************************************************************************
+    >   Araeri                     : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+    >   Nyderrad                   : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+    >   Ocelisean                  : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
 
 
     fatal: [Ocelisean]: FAILED! => {
@@ -189,14 +187,12 @@ Ocelisean                  : ok=3    changed=1    unreachable=0    failed=1    s
         #
         # Same error.
 
---START--
-....
-TASK [Start our Zookeeper service.] *********************************************************************************
-fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library
-fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library
-fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library
-....
---END--
+    >   ....
+    >   TASK [Start our Zookeeper service.] *********************************************************************************
+    >   fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library
+    >   fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library
+    >   fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library
+    >   ....
 
 # -----------------------------------------------------
 # -----------------------------------------------------
@@ -205,22 +201,20 @@ fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the re
 
     sudo pip3 install docker
 
---START--
-WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.
-Collecting docker
-  Downloading https://files.pythonhosted.org/packages/95/47/5560c9cf0c92b50da24216f0e7733250fbed5a497f69e3c70e1be62143fe/docker-4.0.2-py2.py3-none-any.whl (138kB)
-    100% |████████████████████████████████| 143kB 6.3MB/s
-Collecting websocket-client>=0.32.0 (from docker)
-  Downloading https://files.pythonhosted.org/packages/29/19/44753eab1fdb50770ac69605527e8859468f3c0fd7dc5a76dd9c4dbd7906/websocket_client-0.56.0-py2.py3-none-any.whl (200kB)
-    100% |████████████████████████████████| 204kB 10.3MB/s
-Requirement already satisfied: requests!=2.18.0,>=2.14.2 in /usr/lib/python3.7/site-packages (from docker) (2.21.0)
-Requirement already satisfied: six>=1.4.0 in /usr/lib/python3.7/site-packages (from docker) (1.12.0)
-Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /usr/lib/python3.7/site-packages (from requests!=2.18.0,>=2.14.2->docker) (3.0.4)
-Requirement already satisfied: idna<2.9,>=2.5 in /usr/lib/python3.7/site-packages (from requests!=2.18.0,>=2.14.2->docker) (2.7)
-Requirement already satisfied: urllib3<1.25,>=1.21.1 in /usr/lib/python3.7/site-packages (from requests!=2.18.0,>=2.14.2->docker) (1.24.3)
-Installing collected packages: websocket-client, docker
-Successfully installed docker-4.0.2 websocket-client-0.56.0
---END--
+    >   WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.
+    >   Collecting docker
+    >     Downloading https://files.pythonhosted.org/packages/95/47/5560c9cf0c92b50da24216f0e7733250fbed5a497f69e3c70e1be62143fe/docker-4.0.2-py2.py3-none-any.whl (138kB)
+    >       100% |████████████████████████████████| 143kB 6.3MB/s
+    >   Collecting websocket-client>=0.32.0 (from docker)
+    >     Downloading https://files.pythonhosted.org/packages/29/19/44753eab1fdb50770ac69605527e8859468f3c0fd7dc5a76dd9c4dbd7906/websocket_client-0.56.0-py2.py3-none-any.whl (200kB)
+    >       100% |████████████████████████████████| 204kB 10.3MB/s
+    >   Requirement already satisfied: requests!=2.18.0,>=2.14.2 in /usr/lib/python3.7/site-packages (from docker) (2.21.0)
+    >   Requirement already satisfied: six>=1.4.0 in /usr/lib/python3.7/site-packages (from docker) (1.12.0)
+    >   Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /usr/lib/python3.7/site-packages (from requests!=2.18.0,>=2.14.2->docker) (3.0.4)
+    >   Requirement already satisfied: idna<2.9,>=2.5 in /usr/lib/python3.7/site-packages (from requests!=2.18.0,>=2.14.2->docker) (2.7)
+    >   Requirement already satisfied: urllib3<1.25,>=1.21.1 in /usr/lib/python3.7/site-packages (from requests!=2.18.0,>=2.14.2->docker) (1.24.3)
+    >   Installing collected packages: websocket-client, docker
+    >   Successfully installed docker-4.0.2 websocket-client-0.56.0
 
 
 # -----------------------------------------------------
@@ -232,12 +226,10 @@ Successfully installed docker-4.0.2 websocket-client-0.56.0
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-004.yml
 
---START--
-TASK [Start our Zookeeper service.] *********************************************************************************
-fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library ....
-fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Unable to load docker-compose. Try `pip install docker-compose`. ....
-fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library ....
---END--
+    >   TASK [Start our Zookeeper service.] *********************************************************************************
+    >   fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library ....
+    >   fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Unable to load docker-compose. Try `pip install docker-compose`. ....
+    >   fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library ....
 
     #
     # Different error message.
@@ -269,39 +261,37 @@ fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the r
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-004.yml
 
---START--
-PLAY [zookeepers] ***************************************************************************************************
-
-TASK [Gathering Facts] **********************************************************************************************
-ok: [Nyderrad]
-ok: [Araeri]
-ok: [Ocelisean]
-
-TASK [Check the Docker service is started.] *************************************************************************
-ok: [Araeri]
-ok: [Ocelisean]
-ok: [Nyderrad]
-
-TASK [Install Python Docker libraries for Ansible to use.] **********************************************************
-changed: [Araeri]
-changed: [Ocelisean]
-changed: [Nyderrad]
-
-TASK [Install our Zookeeper compose file.] **************************************************************************
-ok: [Araeri]
-ok: [Ocelisean]
-ok: [Nyderrad]
-
-TASK [Start our Zookeeper service.] *********************************************************************************
-fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
-fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
-fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
-
-PLAY RECAP **********************************************************************************************************
-Araeri                     : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
-Nyderrad                   : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
-Ocelisean                  : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
---END--
+    >   PLAY [zookeepers] ***************************************************************************************************
+    >   
+    >   TASK [Gathering Facts] **********************************************************************************************
+    >   ok: [Nyderrad]
+    >   ok: [Araeri]
+    >   ok: [Ocelisean]
+    >   
+    >   TASK [Check the Docker service is started.] *************************************************************************
+    >   ok: [Araeri]
+    >   ok: [Ocelisean]
+    >   ok: [Nyderrad]
+    >   
+    >   TASK [Install Python Docker libraries for Ansible to use.] **********************************************************
+    >   changed: [Araeri]
+    >   changed: [Ocelisean]
+    >   changed: [Nyderrad]
+    >   
+    >   TASK [Install our Zookeeper compose file.] **************************************************************************
+    >   ok: [Araeri]
+    >   ok: [Ocelisean]
+    >   ok: [Nyderrad]
+    >   
+    >   TASK [Start our Zookeeper service.] *********************************************************************************
+    >   fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
+    >   fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
+    >   fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
+    >   
+    >   PLAY RECAP **********************************************************************************************************
+    >   Araeri                     : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+    >   Nyderrad                   : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+    >   Ocelisean                  : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
 
 
 # -----------------------------------------------------
@@ -352,14 +342,12 @@ Ocelisean                  : ok=4    changed=1    unreachable=0    failed=1    s
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-004.yml
 
---START--
-....
-TASK [Start our Zookeeper service.] *********************************************************************************
-fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Configuration error - .FileNotFoundError: [Errno 2] No such file or directory: '/home/ansible/zookeeper.yml'"}
-fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Configuration error - .FileNotFoundError: [Errno 2] No such file or directory: '/home/ansible/zookeeper.yml'"}
-fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Configuration error - .FileNotFoundError: [Errno 2] No such file or directory: '/home/ansible/zookeeper.yml'"}
-....
---END--
+    >   ....
+    >   TASK [Start our Zookeeper service.] *********************************************************************************
+    >   fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Configuration error - .FileNotFoundError: [Errno 2] No such file or directory: '/home/ansible/zookeeper.yml'"}
+    >   fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Configuration error - .FileNotFoundError: [Errno 2] No such file or directory: '/home/ansible/zookeeper.yml'"}
+    >   fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Configuration error - .FileNotFoundError: [Errno 2] No such file or directory: '/home/ansible/zookeeper.yml'"}
+    >   ....
 
 
 # -----------------------------------------------------
@@ -391,17 +379,15 @@ fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Configuration error - .
         --inventory /etc/ansible/hosts.yml \
         /etc/ansible/deploy-004.yml
 
---START--
-TASK [Start our Zookeeper service.] *********************************************************************************
-changed: [Araeri]
-changed: [Nyderrad]
-changed: [Ocelisean]
-
-PLAY RECAP **********************************************************************************************************
-Araeri                     : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Nyderrad                   : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-Ocelisean                  : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
---END--
+    >   TASK [Start our Zookeeper service.] *********************************************************************************
+    >   changed: [Araeri]
+    >   changed: [Nyderrad]
+    >   changed: [Ocelisean]
+    >   
+    >   PLAY RECAP **********************************************************************************************************
+    >   Araeri                     : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Nyderrad                   : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    >   Ocelisean                  : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 
 # -----------------------------------------------------
@@ -411,10 +397,8 @@ Ocelisean                  : ok=5    changed=1    unreachable=0    failed=0    s
 
     docker ps -a
 
---START--
-CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS                      PORTS               NAMES
-3da91ff45fff        confluentinc/cp-zookeeper:4.1.1   "/etc/confluent/dock…"   22 seconds ago      Exited (2) 13 seconds ago                       stevedore_courtney_1
---END--
+    >   CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS                      PORTS               NAMES
+    >   3da91ff45fff        confluentinc/cp-zookeeper:4.1.1   "/etc/confluent/dock…"   22 seconds ago      Exited (2) 13 seconds ago                       stevedore_courtney_1
 
     #
     # Started, but failed immediately ..
@@ -427,22 +411,20 @@ CONTAINER ID        IMAGE                             COMMAND                  C
 
     docker logs stevedore_courtney_1
 
---START--
-[2019-09-14 18:18:59,386] INFO Reading configuration from: /etc/kafka/zookeeper.properties (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
-[2019-09-14 18:18:59,387] ERROR Invalid config, exiting abnormally (org.apache.zookeeper.server.quorum.QuorumPeerMain)
-org.apache.zookeeper.server.quorum.QuorumPeerConfig$ConfigException: Error processing /etc/kafka/zookeeper.properties
-	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parse(QuorumPeerConfig.java:154)
-	at org.apache.zookeeper.server.quorum.QuorumPeerMain.initializeAndRun(QuorumPeerMain.java:101)
-	at org.apache.zookeeper.server.quorum.QuorumPeerMain.main(QuorumPeerMain.java:78)
-Caused by: java.lang.NumberFormatException: For input string: "3888            - ZOOKEEPER_TICK_TIME=2000"
-	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
-	at java.lang.Integer.parseInt(Integer.java:580)
-	at java.lang.Integer.parseInt(Integer.java:615)
-	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parseProperties(QuorumPeerConfig.java:224)
-	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parse(QuorumPeerConfig.java:150)
-	... 2 more
-Invalid config, exiting abnormally
---END--
+    >   [2019-09-14 18:18:59,386] INFO Reading configuration from: /etc/kafka/zookeeper.properties (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+    >   [2019-09-14 18:18:59,387] ERROR Invalid config, exiting abnormally (org.apache.zookeeper.server.quorum.QuorumPeerMain)
+    >   org.apache.zookeeper.server.quorum.QuorumPeerConfig$ConfigException: Error processing /etc/kafka/zookeeper.properties
+    >   	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parse(QuorumPeerConfig.java:154)
+    >   	at org.apache.zookeeper.server.quorum.QuorumPeerMain.initializeAndRun(QuorumPeerMain.java:101)
+    >   	at org.apache.zookeeper.server.quorum.QuorumPeerMain.main(QuorumPeerMain.java:78)
+    >   Caused by: java.lang.NumberFormatException: For input string: "3888            - ZOOKEEPER_TICK_TIME=2000"
+    >   	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+    >   	at java.lang.Integer.parseInt(Integer.java:580)
+    >   	at java.lang.Integer.parseInt(Integer.java:615)
+    >   	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parseProperties(QuorumPeerConfig.java:224)
+    >   	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parse(QuorumPeerConfig.java:150)
+    >   	... 2 more
+    >   Invalid config, exiting abnormally
 
 
 # -----------------------------------------------------
@@ -523,10 +505,8 @@ Ocelisean                  : ok=5    changed=1    unreachable=0    failed=0    s
 
     docker ps -a
 
---START--
-CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS              PORTS                                                                    NAMES
-b1128df93a29        confluentinc/cp-zookeeper:4.1.1   "/etc/confluent/dock…"   50 seconds ago      Up 47 seconds       0.0.0.0:2181->2181/tcp, 0.0.0.0:2888->2888/tcp, 0.0.0.0:3888->3888/tcp   stevedore_courtney_1
---END--
+    >   CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS              PORTS                                                                    NAMES
+    >   b1128df93a29        confluentinc/cp-zookeeper:4.1.1   "/etc/confluent/dock…"   50 seconds ago      Up 47 seconds       0.0.0.0:2181->2181/tcp, 0.0.0.0:2888->2888/tcp, 0.0.0.0:3888->3888/tcp   stevedore_courtney_1
 
 
 # -----------------------------------------------------
@@ -535,32 +515,30 @@ b1128df93a29        confluentinc/cp-zookeeper:4.1.1   "/etc/confluent/dock…"  
 
     docker logs --follow stevedore_courtney_1
 
---START--
-[2019-09-14 18:36:37,164] INFO Server environment:java.io.tmpdir=/tmp (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,164] INFO Server environment:java.compiler=<NA> (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,164] INFO Server environment:os.name=Linux (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,164] INFO Server environment:os.arch=amd64 (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,165] INFO Server environment:os.version=5.2.9-200.fc30.x86_64 (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,165] INFO Server environment:user.name=root (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,165] INFO Server environment:user.home=/root (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,165] INFO Server environment:user.dir=/ (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,168] INFO Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 datadir /var/lib/zookeeper/log/version-2 snapdir /var/lib/zookeeper/data/version-2 (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,170] INFO FOLLOWING - LEADER ELECTION TOOK - 235 (org.apache.zookeeper.server.quorum.Learner)
-[2019-09-14 18:36:37,172] INFO Resolved hostname: Nyderrad to address: Nyderrad/172.16.0.25 (org.apache.zookeeper.server.quorum.QuorumPeer)
-[2019-09-14 18:36:37,173] WARN Unexpected exception, tries=0, connecting to Nyderrad/172.16.0.25:2888 (org.apache.zookeeper.server.quorum.Learner)
-java.net.ConnectException: Connection refused (Connection refused)
-	at java.net.PlainSocketImpl.socketConnect(Native Method)
-	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
-	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
-	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
-	at java.net.Socket.connect(Socket.java:589)
-	at org.apache.zookeeper.server.quorum.Learner.connectToLeader(Learner.java:229)
-	at org.apache.zookeeper.server.quorum.Follower.followLeader(Follower.java:71)
-	at org.apache.zookeeper.server.quorum.QuorumPeer.run(QuorumPeer.java:937)
-[2019-09-14 18:36:38,204] INFO Getting a snapshot from leader (org.apache.zookeeper.server.quorum.Learner)
-[2019-09-14 18:36:38,213] INFO Snapshotting: 0x100000000 to /var/lib/zookeeper/data/version-2/snapshot.100000000 (org.apache.zookeeper.server.persistence.FileTxnSnapLog)
---END--
+    >   [2019-09-14 18:36:37,164] INFO Server environment:java.io.tmpdir=/tmp (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,164] INFO Server environment:java.compiler=<NA> (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,164] INFO Server environment:os.name=Linux (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,164] INFO Server environment:os.arch=amd64 (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,165] INFO Server environment:os.version=5.2.9-200.fc30.x86_64 (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,165] INFO Server environment:user.name=root (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,165] INFO Server environment:user.home=/root (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,165] INFO Server environment:user.dir=/ (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,168] INFO Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 datadir /var/lib/zookeeper/log/version-2 snapdir /var/lib/zookeeper/data/version-2 (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,170] INFO FOLLOWING - LEADER ELECTION TOOK - 235 (org.apache.zookeeper.server.quorum.Learner)
+    >   [2019-09-14 18:36:37,172] INFO Resolved hostname: Nyderrad to address: Nyderrad/172.16.0.25 (org.apache.zookeeper.server.quorum.QuorumPeer)
+    >   [2019-09-14 18:36:37,173] WARN Unexpected exception, tries=0, connecting to Nyderrad/172.16.0.25:2888 (org.apache.zookeeper.server.quorum.Learner)
+    >   java.net.ConnectException: Connection refused (Connection refused)
+    >   	at java.net.PlainSocketImpl.socketConnect(Native Method)
+    >   	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+    >   	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+    >   	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+    >   	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+    >   	at java.net.Socket.connect(Socket.java:589)
+    >   	at org.apache.zookeeper.server.quorum.Learner.connectToLeader(Learner.java:229)
+    >   	at org.apache.zookeeper.server.quorum.Follower.followLeader(Follower.java:71)
+    >   	at org.apache.zookeeper.server.quorum.QuorumPeer.run(QuorumPeer.java:937)
+    >   [2019-09-14 18:36:38,204] INFO Getting a snapshot from leader (org.apache.zookeeper.server.quorum.Learner)
+    >   [2019-09-14 18:36:38,213] INFO Snapshotting: 0x100000000 to /var/lib/zookeeper/data/version-2/snapshot.100000000 (org.apache.zookeeper.server.persistence.FileTxnSnapLog)
 
 
 # -----------------------------------------------------
@@ -570,20 +548,18 @@ java.net.ConnectException: Connection refused (Connection refused)
 
     docker logs --follow stevedore_courtney_1
 
---START--
-[2019-09-14 18:36:37,177] INFO LEADING - LEADER ELECTION TOOK - 265 (org.apache.zookeeper.server.quorum.Leader)
-[2019-09-14 18:36:37,200] INFO Follower sid: 1 : info : org.apache.zookeeper.server.quorum.QuorumPeer$QuorumServer@3d6d993e (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:37,235] INFO Synchronizing with Follower sid: 1 maxCommittedLog=0x0 minCommittedLog=0x0 peerLastZxid=0x0 (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:37,235] INFO leader and follower are in sync, zxid=0x0 (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:37,235] INFO Sending DIFF (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:37,284] INFO Received NEWLEADER-ACK message from 1 (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:37,284] INFO Have quorum of supporters, sids: [ 1,3 ]; starting up and setting last processed zxid: 0x100000000 (org.apache.zookeeper.server.quorum.Leader)
-[2019-09-14 18:36:38,188] INFO Follower sid: 2 : info : org.apache.zookeeper.server.quorum.QuorumPeer$QuorumServer@72bd13ec (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:38,203] INFO Synchronizing with Follower sid: 2 maxCommittedLog=0x0 minCommittedLog=0x0 peerLastZxid=0x0 (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:38,203] INFO Sending SNAP (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:38,204] INFO Sending snapshot last zxid of peer is 0x0  zxid of leader is 0x100000000sent zxid of db as 0x100000000 (org.apache.zookeeper.server.quorum.LearnerHandler)
-[2019-09-14 18:36:38,231] INFO Received NEWLEADER-ACK message from 2 (org.apache.zookeeper.server.quorum.LearnerHandler)
---END--
+    >   [2019-09-14 18:36:37,177] INFO LEADING - LEADER ELECTION TOOK - 265 (org.apache.zookeeper.server.quorum.Leader)
+    >   [2019-09-14 18:36:37,200] INFO Follower sid: 1 : info : org.apache.zookeeper.server.quorum.QuorumPeer$QuorumServer@3d6d993e (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:37,235] INFO Synchronizing with Follower sid: 1 maxCommittedLog=0x0 minCommittedLog=0x0 peerLastZxid=0x0 (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:37,235] INFO leader and follower are in sync, zxid=0x0 (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:37,235] INFO Sending DIFF (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:37,284] INFO Received NEWLEADER-ACK message from 1 (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:37,284] INFO Have quorum of supporters, sids: [ 1,3 ]; starting up and setting last processed zxid: 0x100000000 (org.apache.zookeeper.server.quorum.Leader)
+    >   [2019-09-14 18:36:38,188] INFO Follower sid: 2 : info : org.apache.zookeeper.server.quorum.QuorumPeer$QuorumServer@72bd13ec (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:38,203] INFO Synchronizing with Follower sid: 2 maxCommittedLog=0x0 minCommittedLog=0x0 peerLastZxid=0x0 (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:38,203] INFO Sending SNAP (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:38,204] INFO Sending snapshot last zxid of peer is 0x0  zxid of leader is 0x100000000sent zxid of db as 0x100000000 (org.apache.zookeeper.server.quorum.LearnerHandler)
+    >   [2019-09-14 18:36:38,231] INFO Received NEWLEADER-ACK message from 2 (org.apache.zookeeper.server.quorum.LearnerHandler)
 
 
 # -----------------------------------------------------
@@ -593,20 +569,18 @@ java.net.ConnectException: Connection refused (Connection refused)
 
     docker logs --follow stevedore_courtney_1
 
---START--
-[2019-09-14 18:36:37,167] INFO Server environment:java.io.tmpdir=/tmp (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,167] INFO Server environment:java.compiler=<NA> (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,167] INFO Server environment:os.name=Linux (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,167] INFO Server environment:os.arch=amd64 (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,168] INFO Server environment:os.version=5.2.9-200.fc30.x86_64 (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,168] INFO Server environment:user.name=root (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,168] INFO Server environment:user.home=/root (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,168] INFO Server environment:user.dir=/ (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,171] INFO Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 datadir /var/lib/zookeeper/log/version-2 snapdir /var/lib/zookeeper/data/version-2 (org.apache.zookeeper.server.ZooKeeperServer)
-[2019-09-14 18:36:37,174] INFO FOLLOWING - LEADER ELECTION TOOK - 545 (org.apache.zookeeper.server.quorum.Learner)
-[2019-09-14 18:36:37,177] INFO Resolved hostname: Nyderrad to address: Nyderrad/172.16.0.25 (org.apache.zookeeper.server.quorum.QuorumPeer)
-[2019-09-14 18:36:37,237] INFO Getting a diff from the leader 0x0 (org.apache.zookeeper.server.quorum.Learner)
---END--
+    >   [2019-09-14 18:36:37,167] INFO Server environment:java.io.tmpdir=/tmp (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,167] INFO Server environment:java.compiler=<NA> (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,167] INFO Server environment:os.name=Linux (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,167] INFO Server environment:os.arch=amd64 (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,168] INFO Server environment:os.version=5.2.9-200.fc30.x86_64 (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,168] INFO Server environment:user.name=root (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,168] INFO Server environment:user.home=/root (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,168] INFO Server environment:user.dir=/ (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,171] INFO Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 datadir /var/lib/zookeeper/log/version-2 snapdir /var/lib/zookeeper/data/version-2 (org.apache.zookeeper.server.ZooKeeperServer)
+    >   [2019-09-14 18:36:37,174] INFO FOLLOWING - LEADER ELECTION TOOK - 545 (org.apache.zookeeper.server.quorum.Learner)
+    >   [2019-09-14 18:36:37,177] INFO Resolved hostname: Nyderrad to address: Nyderrad/172.16.0.25 (org.apache.zookeeper.server.quorum.QuorumPeer)
+    >   [2019-09-14 18:36:37,237] INFO Getting a diff from the leader 0x0 (org.apache.zookeeper.server.quorum.Learner)
 
 
 

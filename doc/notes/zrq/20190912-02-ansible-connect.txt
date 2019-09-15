@@ -61,29 +61,25 @@
 
     cat "${HOME}/.ssh/config"
 
---START--
-Host esperia
-    HostName 192.41.108.44
-    User dmr
-    IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
---END--
+    >   Host esperia
+    >       HostName 192.41.108.44
+    >       User dmr
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
 
---START--
-Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
-    User Stevedore
-    ProxyCommand ssh -W %h:%p esperia
-    IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
---END--
+    >   Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
+    >       User Stevedore
+    >       ProxyCommand ssh -W %h:%p esperia
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
 
 
 # -----------------------------------------------------
@@ -147,29 +143,25 @@ No user exists for uid 1000
 
     cat "${HOME}/.ssh/config"
 
---START--
-Host esperia
-    HostName 192.41.108.44
-    User dmr
-    IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
---END--
+    >   Host esperia
+    >       HostName 192.41.108.44
+    >       User dmr
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
 
---START--
-Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
-    User Stevedore
-    ProxyCommand ssh -W %h:%p esperia
-    IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
---END--
+    >   Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
+    >       User Stevedore
+    >       ProxyCommand ssh -W %h:%p esperia
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
 
 
 # -----------------------------------------------------
@@ -203,17 +195,15 @@ Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubar
         hostname
         "
 
---START--
-The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
-ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-The authenticity of host 'ocelisean (<no hostip for proxy command>)' can't be established.
-ECDSA key fingerprint is SHA256:omXY/XO+DeS8VuzXKpO6nsZn3BVX79CUfvc9YlNVH2Q.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'ocelisean' (ECDSA) to the list of known hosts.
-Thu 12 Sep 2019 08:16:01 PM BST
-Ocelisean
---END--
+    >   The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+    >   ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+    >   Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    >   The authenticity of host 'ocelisean (<no hostip for proxy command>)' can't be established.
+    >   ECDSA key fingerprint is SHA256:omXY/XO+DeS8VuzXKpO6nsZn3BVX79CUfvc9YlNVH2Q.
+    >   Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    >   Warning: Permanently added 'ocelisean' (ECDSA) to the list of known hosts.
+    >   Thu 12 Sep 2019 08:16:01 PM BST
+    >   Ocelisean
 
     exit
 
@@ -336,11 +326,9 @@ Ocelisean
         hostname
         "
 
---START--
-Warning: Permanently added 'ocelisean' (ECDSA) to the list of known hosts.
-Fri 13 Sep 2019 12:52:30 AM BST
-Ocelisean
---END--
+    >   Warning: Permanently added 'ocelisean' (ECDSA) to the list of known hosts.
+    >   Fri 13 Sep 2019 12:52:30 AM BST
+    >   Ocelisean
 
 
 # -----------------------------------------------------
@@ -350,15 +338,13 @@ Ocelisean
     ansible \
         Ocelisean -m ping
 
---START--
-Ocelisean | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
---END--
+    >   Ocelisean | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
 
 
 # -----------------------------------------------------
@@ -368,78 +354,76 @@ Ocelisean | SUCCESS => {
     ansible \
         all -m ping
 
---START--
-Ocelisean | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Araeri | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Nyderrad | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Rhoawien | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Gwirabard | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Boasien | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Falidon | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Brawia | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Legendamwen | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Glaubard | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
---END--
+    >   Ocelisean | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Araeri | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Nyderrad | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Rhoawien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Gwirabard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Boasien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Falidon | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Brawia | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Legendamwen | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Glaubard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
 
 
 # -----------------------------------------------------
@@ -450,29 +434,27 @@ Glaubard | SUCCESS => {
         zookeepers \
             -m ping
 
---START--
-Nyderrad | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Ocelisean | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Araeri | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
---END--
+    >   Nyderrad | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Ocelisean | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Araeri | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
 
 # -----------------------------------------------------
 # Ping our kafka machines.
@@ -482,43 +464,41 @@ Araeri | SUCCESS => {
         kafkanodes \
             -m ping
 
---START--
-Falidon | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Rhoawien | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Brawia | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Gwirabard | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Boasien | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
---END--
+    >   Falidon | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Rhoawien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Brawia | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Gwirabard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Boasien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
 
 # -----------------------------------------------------
 # Ping our mirror maker machines.
@@ -528,22 +508,20 @@ Boasien | SUCCESS => {
         mirrormakers \
             -m ping
 
---START--
-Legendamwen | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-Glaubard | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
---END--
+    >   Legendamwen | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Glaubard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
 
 
 
