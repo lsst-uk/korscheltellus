@@ -41,18 +41,20 @@
                 bash
 
 
-    # -----------------------------------------------------
-    # Ping each of our machines.
-    #[user@ansible-client]
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Ping each of our machines.
+#[user@ansible-client]
 
-        ansible \
-            all -m ping
+    ansible \
+        all -m ping
 
         #
         # Lots of SSH problems ...
         #
 
 
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Local ssh config on desktop
 #[user@desktop]
@@ -139,18 +141,6 @@ No user exists for uid 1000
     Needs to have a normal user account ?
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 # -----------------------------------------------------
 # Local ssh config on desktop
 #[user@desktop]
@@ -201,6 +191,7 @@ Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubar
                 bash
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Check we can ssh into the target.
 #[user@ansible-client]
 
@@ -228,34 +219,14 @@ Ocelisean
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Add the host fingerprints to our local config.
 #[user@desktop]
 
-    cat "${HOME}/.ssh/config"
+    #
+    # ....
+    #
 
---START--
-Host esperia
-    HostName 192.41.108.44
-    User dmr
-    IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
---END--
-
---START--
-Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
-    User Stevedore
-    ProxyCommand ssh -W %h:%p esperia
-    IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
---END--
 
 # -----------------------------------------------------
 # Run our Ansible client.
@@ -276,6 +247,7 @@ Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubar
                 bash
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Check we can ssh into the target.
 #[user@ansible-client]
 
@@ -307,14 +279,12 @@ Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubar
         "
 
 
+# -----------------------------------------------------
+# Ping each of our machines.
+#[user@ansible-client]
 
-
-    # -----------------------------------------------------
-    # Ping each of our machines.
-    #[user@ansible-client]
-
-        ansible \
-            all -m ping
+    ansible \
+        all -m ping
 
 
     #####
@@ -323,6 +293,7 @@ Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubar
     ##### https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Multiplexing
     #####
 
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Create our control connection.
 # https://www.anchor.com.au/blog/2010/02/ssh-controlmaster-the-good-the-bad-the-ugly/
@@ -352,16 +323,18 @@ Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubar
             korscheltellus/ansible-client:latest \
                 bash
 
-    # -----------------------------------------------------
-    # Login to one of our target machines.
-    #[user@ansible-client]
 
-        ssh -F /etc/ansible/ssh.cfg \
-            Ocelisean \
-            "
-            date
-            hostname
-            "
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Login to one of our target machines.
+#[user@ansible-client]
+
+    ssh -F /etc/ansible/ssh.cfg \
+        Ocelisean \
+        "
+        date
+        hostname
+        "
 
 --START--
 Warning: Permanently added 'ocelisean' (ECDSA) to the list of known hosts.
@@ -370,12 +343,12 @@ Ocelisean
 --END--
 
 
-    # -----------------------------------------------------
-    # Ping one of our target machines.
-    #[user@ansible-client]
+# -----------------------------------------------------
+# Ping one of our target machines.
+#[user@ansible-client]
 
-        ansible \
-            Ocelisean -m ping
+    ansible \
+        Ocelisean -m ping
 
 --START--
 Ocelisean | SUCCESS => {
@@ -388,12 +361,12 @@ Ocelisean | SUCCESS => {
 --END--
 
 
-    # -----------------------------------------------------
-    # Ping all of our target machines.
-    #[user@ansible-client]
+# -----------------------------------------------------
+# Ping all of our target machines.
+#[user@ansible-client]
 
-        ansible \
-            all -m ping
+    ansible \
+        all -m ping
 
 --START--
 Ocelisean | SUCCESS => {
@@ -469,14 +442,13 @@ Glaubard | SUCCESS => {
 --END--
 
 
+# -----------------------------------------------------
+# Ping our zookeeper machines.
+#[user@ansible-client]
 
-    # -----------------------------------------------------
-    # Ping our zookeeper machines.
-    #[user@ansible-client]
-
-        ansible \
-            zookeepers \
-                -m ping
+    ansible \
+        zookeepers \
+            -m ping
 
 --START--
 Nyderrad | SUCCESS => {
@@ -502,13 +474,13 @@ Araeri | SUCCESS => {
 }
 --END--
 
-    # -----------------------------------------------------
-    # Ping our kafka machines.
-    #[user@ansible-client]
+# -----------------------------------------------------
+# Ping our kafka machines.
+#[user@ansible-client]
 
-        ansible \
-            kafkanodes \
-                -m ping
+    ansible \
+        kafkanodes \
+            -m ping
 
 --START--
 Falidon | SUCCESS => {
@@ -548,13 +520,13 @@ Boasien | SUCCESS => {
 }
 --END--
 
-    # -----------------------------------------------------
-    # Ping our mirror maker machines.
-    #[user@ansible-client]
+# -----------------------------------------------------
+# Ping our mirror maker machines.
+#[user@ansible-client]
 
-        ansible \
-            mirrormakers \
-                -m ping
+    ansible \
+        mirrormakers \
+            -m ping
 
 --START--
 Legendamwen | SUCCESS => {

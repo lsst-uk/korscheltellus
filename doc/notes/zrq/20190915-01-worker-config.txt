@@ -1,0 +1,93 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our 'ansible' group.
+#[root@work01]
+
+    groupadd \
+        --system \
+            ansible
+
+# -----------------------------------------------------
+# Add our 'ansible' group to the sudoers list.
+#[root@work01]
+
+    visudo
+
+        ....
+    +   # Allow members of the ansible group to execute any command.
+    +   %ansible ALL=(ALL:ALL) NOPASSWD:ALL
+        ....
+
+
+# -----------------------------------------------------
+# Add the admin accounts to the 'ansible' group.
+#[root@work01]
+
+    usermod \
+        --append \
+        --groups ansible \
+        dmr
+
+    usermod \
+        --append \
+        --groups ansible \
+        msh
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Check Ansible can 'ping' as root.
+#[ansible@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-005.yml
+
+--START--
+PLAY [workers] ******************************************************************************************************
+
+TASK [Check we can login.] ******************************************************************************************
+ok: [work01]
+
+TASK [Check we can use sudo.] ***************************************************************************************
+ok: [work01]
+
+PLAY RECAP **********************************************************************************************************
+work01                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+--END--
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# List the existing filesystems.
+# https://unix.stackexchange.com/questions/53542/how-to-determine-the-filesystem-of-an-unmounted-device
+# https://unix.stackexchange.com/a/53552
+#[user@work01]
+
+        sudo parted --list
+
+
+--START--
+--END--
+

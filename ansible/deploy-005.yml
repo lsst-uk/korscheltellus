@@ -19,25 +19,13 @@
 # </meta:header>
 #
 
-Host esperia
-    ControlPath ~/.ssh/esperia
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
+---
+- hosts: workers
+  gather_facts: false
+  tasks:
+   - name: Check we can login.
+     ping:
 
-Host work01 work02 work03 work04
-    ProxyCommand ssh -F /etc/ansible/ssh.cfg -W %h:%p esperia
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
-
-
-Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
-    ProxyCommand ssh -F /etc/ansible/ssh.cfg -W %h:%p esperia
-    ServerAliveInterval 60
-    ServerAliveCountMax 5
-    ControlPath ~/.ssh/esperia-%r@%h:%p
-    ControlMaster auto
-    ControlPersist 5m
-
+   - name: Check we can use sudo.
+     become: true
+     ping:

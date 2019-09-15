@@ -55,6 +55,7 @@
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Run our first Ansible playbook.
 #[user@ansible-client]
 
@@ -81,6 +82,7 @@ Nyderrad                   : ok=2    changed=0    unreachable=0    failed=0    s
 Ocelisean                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 --END--
 
+
 # -----------------------------------------------------
 # Run our next Ansible playbook.
 #[user@ansible-client]
@@ -90,7 +92,6 @@ Ocelisean                  : ok=2    changed=0    unreachable=0    failed=0    s
         /etc/ansible/deploy-002.yml
 
 --START--
-
 PLAY [zookeepers] ***************************************************************************************************
 
 TASK [Gathering Facts] **********************************************************************************************
@@ -138,6 +139,7 @@ Ocelisean                  : ok=2    changed=1    unreachable=0    failed=0    s
 --END--
 
 
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Check the config files ...
 #[user@desktop]

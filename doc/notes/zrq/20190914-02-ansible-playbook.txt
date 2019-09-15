@@ -57,12 +57,13 @@
 
 
 # -----------------------------------------------------
-# Run our first Ansible playbook.
+# -----------------------------------------------------
+# Run our Ansible playbook.
 #[user@ansible-client]
 
-            ansible-playbook \
-                --inventory /etc/ansible/hosts.yml \
-                /etc/ansible/deploy-004.yml
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
 
 --START--
 PLAY [zookeepers] ***************************************************************************************************
@@ -94,7 +95,6 @@ Ocelisean                  : ok=3    changed=1    unreachable=0    failed=1    s
 --END--
 
 
-
     fatal: [Ocelisean]: FAILED! => {
         "changed": false,
         "msg": "
@@ -119,7 +119,7 @@ Ocelisean                  : ok=3    changed=1    unreachable=0    failed=1    s
     # pip install docker
 
 
-
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Add call to pip install to our Dockerfile.
 #[user@desktop]
@@ -140,7 +140,6 @@ Ocelisean                  : ok=3    changed=1    unreachable=0    failed=1    s
 #
 # Update the ansible-client Dockerfile, rebuild, and deploy.
 #
-
 
 
 # -----------------------------------------------------
@@ -179,12 +178,13 @@ Ocelisean                  : ok=3    changed=1    unreachable=0    failed=1    s
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Run our Ansible playbook.
 #[user@ansible-client]
 
-        ansible-playbook \
-            --inventory /etc/ansible/hosts.yml \
-            /etc/ansible/deploy-004.yml
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
 
         #
         # Same error.
@@ -199,7 +199,8 @@ fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the re
 --END--
 
 # -----------------------------------------------------
-# Install the python-docker on Araeri.
+# -----------------------------------------------------
+# Install the python-docker on one of the virtual machines.
 #[Stevedore@Araeri ~]$
 
     sudo pip3 install docker
@@ -223,15 +224,16 @@ Successfully installed docker-4.0.2 websocket-client-0.56.0
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Run our Ansible playbook.
 #[user@ansible-client]
 
-        ansible-playbook \
-            --inventory /etc/ansible/hosts.yml \
-            /etc/ansible/deploy-004.yml
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
 
 --START--
-TASK [Start our Zookeeper service.] *********************************************************************************************************************************************************************************************************
+TASK [Start our Zookeeper service.] *********************************************************************************
 fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library ....
 fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Unable to load docker-compose. Try `pip install docker-compose`. ....
 fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library ....
@@ -242,6 +244,7 @@ fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the r
     # "Unable to load docker-compose. Try `pip install docker-compose`."
     #
 
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Add call to pip in our playbook.
 #[user@desktop]
@@ -258,12 +261,13 @@ fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the r
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Run our Ansible playbook.
 #[user@ansible-client]
 
-        ansible-playbook \
-            --inventory /etc/ansible/hosts.yml \
-            /etc/ansible/deploy-004.yml
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
 
 --START--
 PLAY [zookeepers] ***************************************************************************************************
@@ -340,12 +344,13 @@ Ocelisean                  : ok=4    changed=1    unreachable=0    failed=1    s
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Run our Ansible playbook.
 #[user@ansible-client]
 
-        ansible-playbook \
-            --inventory /etc/ansible/hosts.yml \
-            /etc/ansible/deploy-004.yml
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
 
 --START--
 ....
@@ -357,6 +362,7 @@ fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Configuration error - .
 --END--
 
 
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Update our playbook.
 #[user@desktop]
@@ -377,26 +383,28 @@ fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Configuration error - .
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Run our Ansible playbook.
 #[user@ansible-client]
 
-        ansible-playbook \
-            --inventory /etc/ansible/hosts.yml \
-            /etc/ansible/deploy-004.yml
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
 
 --START--
-TASK [Start our Zookeeper service.] *********************************************************************************************************************************************************************************************************
+TASK [Start our Zookeeper service.] *********************************************************************************
 changed: [Araeri]
 changed: [Nyderrad]
 changed: [Ocelisean]
 
-PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+PLAY RECAP **********************************************************************************************************
 Araeri                     : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 Nyderrad                   : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 Ocelisean                  : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 --END--
 
 
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Check what is running on one of the VMs.
 #[user@Araeri]
@@ -460,6 +468,7 @@ volumes:
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Fix our compose template.
 #[user@desktop]
 
@@ -489,18 +498,18 @@ volumes:
 # Run our Ansible playbook.
 #[user@ansible-client]
 
-        ansible-playbook \
-            --inventory /etc/ansible/hosts.yml \
-            /etc/ansible/deploy-004.yml
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
 
 
 --START
-TASK [Start our Zookeeper service.] *********************************************************************************************************************************************************************************************************
+TASK [Start our Zookeeper service.] **********************************************************************************
 changed: [Ocelisean]
 changed: [Nyderrad]
 changed: [Araeri]
 
-PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+PLAY RECAP ***********************************************************************************************************
 Araeri                     : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 Nyderrad                   : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 Ocelisean                  : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
@@ -555,6 +564,7 @@ java.net.ConnectException: Connection refused (Connection refused)
 
 
 # -----------------------------------------------------
+# -----------------------------------------------------
 # Check the Docker logs output.
 #[user@Nyderrad]
 
@@ -576,6 +586,7 @@ java.net.ConnectException: Connection refused (Connection refused)
 --END--
 
 
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Check the Docker logs output.
 #[user@Ocelisean]
