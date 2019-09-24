@@ -15,8 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM korscheltellus/fedora:2019.09.14
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+ARG buildtag
+
+FROM korscheltellus/fedora:${buildtag}
+
+# https://docs.docker.com/v17.09/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG buildtag
+ARG buildtime
+
+LABEL maintainer="Dave Morris <docker-admin@metagrid.co.uk>"
+LABEL buildtag="${buildtag}"
+LABEL buildtime="${buildtime}"
 
 #
 # Install the SSH client.
@@ -47,7 +56,7 @@ RUN dnf install -y ipcalc
 # This relies on our user having the same UID.
 # Install gosu code from not-root ?
 RUN useradd \
-    --uid 1000 \
+    --uid 1001 \
     --user-group \
     --create-home \
     --home-dir /home/ansible \

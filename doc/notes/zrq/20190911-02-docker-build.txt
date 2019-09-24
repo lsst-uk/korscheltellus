@@ -25,16 +25,21 @@
 #[user@desktop]
 
     source "${HOME}/korscheltellus.settings"
-    pushd "${KORSCHELTELLUS_CODE:?}"
+    pushd  "${KORSCHELTELLUS_CODE:?}"
 
-        export buildtag=$(date '+%Y.%m.%d')
+        buildtag=$(date '+%Y.%m.%d')
+        buildtime=$(date '+%Y-%m-%dT%H:%M:%S')
 
         docker build \
+            --build-arg "buildtag=${buildtag:?}" \
+            --build-arg "buildtime=${buildtime:?}" \
             --tag korscheltellus/fedora:latest \
             --tag korscheltellus/fedora:${buildtag:?} \
             docker/fedora
 
         docker build \
+            --build-arg "buildtag=${buildtag:?}" \
+            --build-arg "buildtime=${buildtime:?}" \
             --tag korscheltellus/ansible-client:latest \
             --tag korscheltellus/ansible-client:${buildtag:?} \
             docker/ansible-client

@@ -19,15 +19,18 @@
 # https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedora30
 FROM fedora@sha256:d8d53450cae00985f9dad54a3520944c59e64aa8f01d3be61988404e11c15973
 
-MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
+# https://docs.docker.com/v17.09/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG buildtag
+ARG buildtime
+
+LABEL maintainer="Dave Morris <docker-admin@metagrid.co.uk>"
+LABEL buildtag="${buildtag}"
+LABEL buildtime="${buildtime}"
 
 #
-# Mount the DNF cache as a volume.
+# Mount the YUM cache as a volume.
 VOLUME /var/cache/dnf
-
-#
-# Update the repo data.
-RUN dnf -y makecache
+VOLUME /var/cache/yum
 
 #
 # Install common admin tools.

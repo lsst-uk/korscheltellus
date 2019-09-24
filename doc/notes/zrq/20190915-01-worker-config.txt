@@ -32,13 +32,12 @@
 # Add our 'ansible' group to the sudoers list.
 #[root@work01]
 
-    visudo
+    cat > /etc/sudoers.d/temp << 'EOF'
 
-        ....
-    +   # Allow members of the ansible group to execute any command.
-    +   %ansible ALL=(ALL:ALL) NOPASSWD:ALL
-        ....
+# Allow members of the 'ansible' group to execute any command.
+%ansible ALL=(ALL:ALL) NOPASSWD:ALL
 
+EOF
 
 # -----------------------------------------------------
 # Add the admin accounts to the 'ansible' group.
