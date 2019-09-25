@@ -20,18 +20,30 @@
 #
 
 #
-# SSH connection check.
+# Add a partition to each Kafka node.
 #
 
 ---
-- hosts: dockers
+- hosts: work01
   gather_facts: false
+
   tasks:
 
-    - name: "Check we can connect"
-      ping:
+    - name: List the VMs
+      command:
+        argv:
+          - "virsh"
+          - "--connect"
+          - "qemu:///system"
+          - "list"
+          - "--all"
 
-    - name: "Check we can use sudo"
-      become: true
-      ping:
+
+    - name: Attach discs to the Kafka VMs
+      include_tasks: deploy-006-01.yml
+      loop: "{{ groups['kafkas'] }}"
+      loop_control:
+        loop_var:  vm_name
+        index_var: vm_index
+
 

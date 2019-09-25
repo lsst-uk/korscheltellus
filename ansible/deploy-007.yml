@@ -1,0 +1,85 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+#---------------------------------------------------------------------
+# Check if the new device has a filesystem.
+
+    echo "Checking for btrfs filesystem on [${devpath:?}]"
+    sudo btrfs filesystem show "${devpath:?}" > /dev/null 2>&1
+    fscheck=$?
+
+#---------------------------------------------------------------------
+# Create a filesystem on the new device.
+
+    if [ ${fscheck} == 0 ]
+    then
+        echo "Found btrfs filesystem on [${devpath:?}]"
+    else
+        echo "Creating btrfs filesystem on [${devpath:?}]"
+        sudo \
+            mkfs.btrfs \
+                ${devpath:?}
+    fi
+
+#---------------------------------------------------------------------
+# Create our mount point.
+
+    echo "Checking mount point [${mntpath:?}]"
+    if [ -e "${mntpath:?}" ]
+    then
+        echo "Found mount point [${mntpath:?}]"
+    else
+        echo "Creating mount point [${mntpath:?}]"
+        sudo mkdir -p "${mntpath:?}"
+        sudo touch "${mntpath:?}/mount-failed"
+    fi
+
+#---------------------------------------------------------------------
+# Add the volume to our FileSystemTABle.
+# https://www.howtoforge.com/reducing-disk-io-by-mounting-partitions-with-noatime
+
+    devuuid=$(
+        lsblk --noheadings --output UUID "${devpath:?}"
+        )
+
+    echo "Checking for device UUID [${devuuid:?}]"
+    if [ $(grep -c "${devuuid:?}" /etc/fstab) == 1 ]
+    then
+        echo "Found device UUID [${devuuid:?}]"
+    else
+        echo "Adding device UUID [${devuuid:?}]"
+        sudo tee -a /etc/fstab << EOTAB
+UUID=${devuuid:?} ${mntpath:?}    btrfs    defaults,noatime    0  0
+EOTAB
+    fi
+
+#---------------------------------------------------------------------
+# Mount the new volume.
+
+    sudo \
+        mount "${mntpath:?}"
+
+#---------------------------------------------------------------------
+# Check the new volume.
+
+    echo "Checking data space on [${mntpath:?}]"
+    df -h "${mntpath:?}"
+

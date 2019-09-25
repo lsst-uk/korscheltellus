@@ -19,23 +19,62 @@
 # </meta:header>
 #
 
+#
+# Partition physical disc /dev/sdb.
+#
+
 ---
-- hosts: zookeepers
+- hosts: work01
+  gather_facts: false
+
+  vars:
+    count: 5
+
   tasks:
 
-    - name: Install our Zookeeper compose file.
-      template:
-        src:  zookeeper.yml
-        dest: zookeeper.yml
+    - name: Check we can use sudo
+      become: true
+      ping:
 
-    - name: Start our Zookeeper service.
-      docker_compose:
-        project_src:
-            '.'
-        files:
-          - zookeeper.yml
-        services:
-          - courtney
-        state:
-          started
+    - name: List the current partitions
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
+    - name: Remove all the current partitions
+      become: true
+      parted:
+        device: /dev/sdb
+        number: '{{ item.num }}'
+        state: absent
+      loop: '{{ sdb_info.partitions }}'
+
+    - name: Create new partitions sdb-[1-{{ count }}]
+      become: true
+      parted:
+        device: /dev/sdb
+        number: "{{ item + 1 }}"
+        label:  gpt
+        state:  present
+        name:   "sdb-{{ item + 1 }}"
+        unit:   '%'
+        part_start: "{{ (item * (100/count)) | int }}%"
+        part_end:   "{{ ((item + 1) * (100/count)) | int }}%"
+      loop: "{{ range(0,count) | list }}"
+
+    - name: List the current partitions
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
 

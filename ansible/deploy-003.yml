@@ -20,13 +20,27 @@
 #
 
 #
-# Install the compose YAML file for Zookepers.
+# Deploy and start our Zookeeper services.
+#
+
 ---
 - hosts: zookeepers
   gather_facts: false
   tasks:
-    - name: Install compose YAML file
+
+    - name: Install our Zookeeper compose file
       template:
         src:  zookeeper.yml
         dest: zookeeper.yml
+
+    - name: Start our Zookeeper service
+      docker_compose:
+        project_src:
+            '.'
+        files:
+          - zookeeper.yml
+        services:
+          - courtney
+        state:
+          present
 
