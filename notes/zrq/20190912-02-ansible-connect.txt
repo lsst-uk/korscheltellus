@@ -1,0 +1,527 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Run our Ansible client.
+#[user@desktop]
+
+    source "${HOME}/korscheltellus.settings"
+    pushd "${KORSCHELTELLUS_CODE:?}"
+
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname ansible-client \
+            --user "$(id -u):$(id -g)" \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            --volume ${HOME}/.ssh/config:/root/.ssh/config:ro \
+            --volume $(pwd -P)/ansible:/etc/ansible:ro \
+            korscheltellus/ansible-client:latest \
+                bash
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Ping each of our machines.
+#[user@ansible-client]
+
+    ansible \
+        all -m ping
+
+        #
+        # Lots of SSH problems ...
+        #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Local ssh config on desktop
+#[user@desktop]
+
+    cat "${HOME}/.ssh/config"
+
+    >   Host esperia
+    >       HostName 192.41.108.44
+    >       User dmr
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
+
+    >   Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
+    >       User Stevedore
+    >       ProxyCommand ssh -W %h:%p esperia
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
+
+
+# -----------------------------------------------------
+# Try passing local config into container.
+#[user@desktop]
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+        --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+        --volume ${HOME}/.ssh/config:/root/.ssh/config:ro \
+        --volume $(pwd -P)/ansible:/etc/ansible:ro \
+        korscheltellus/ansible-client:latest \
+            bash
+
+            ssh Ocelisean
+
+--START
+Bad owner or permissions on /root/.ssh/config
+--END--
+
+
+# -----------------------------------------------------
+# Try passing local uid and gid into container.
+# (generally a good thing, because we don't want to run as root)
+#[user@desktop]
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --user "$(id -u):$(id -g)" \
+        --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+        --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+        --volume ${HOME}/.ssh/config:/root/.ssh/config:ro \
+        --volume $(pwd -P)/ansible:/etc/ansible:ro \
+        korscheltellus/ansible-client:latest \
+            bash
+
+            ssh Ocelisean
+
+--START
+No user exists for uid 1000
+--END--
+
+
+    What we want is ...
+
+    Non-root uid inside the container.
+    Needs to have access to our local ssh config.
+    - volume mount
+    Needs to have a home directory (not ours)
+    Needs to have a normal user account ?
+
+
+# -----------------------------------------------------
+# Local ssh config on desktop
+#[user@desktop]
+
+    cat "${HOME}/.ssh/config"
+
+    >   Host esperia
+    >       HostName 192.41.108.44
+    >       User dmr
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
+
+    >   Host Ocelisean Araeri Nyderrad Rhoawien Gwirabard Boasien Falidon Brawia Glaubard Legendamwen
+    >       User Stevedore
+    >       ProxyCommand ssh -W %h:%p esperia
+    >       IdentityFile ~/.ssh/dmr.roe.ac.uk.rsa
+    >       ServerAliveInterval 60
+    >       ServerAliveCountMax 5
+    >       ControlPath ~/.ssh/esperia-%r@%h:%p
+    >       ControlMaster auto
+    >       ControlPersist 5m
+
+
+# -----------------------------------------------------
+# Run our Ansible client.
+#[user@desktop]
+
+    source "${HOME}/korscheltellus.settings"
+    pushd "${KORSCHELTELLUS_CODE:?}"
+
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname ansible-client \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            --volume $(pwd -P)/ansible:/etc/ansible:ro \
+            korscheltellus/ansible-client:latest \
+                bash
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Check we can ssh into the target.
+#[user@ansible-client]
+
+    mkdir ~/.ssh
+
+    ssh -F /etc/ansible/ssh.cfg Ocelisean \
+        "
+        date
+        hostname
+        "
+
+    >   The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+    >   ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+    >   Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    >   The authenticity of host 'ocelisean (<no hostip for proxy command>)' can't be established.
+    >   ECDSA key fingerprint is SHA256:omXY/XO+DeS8VuzXKpO6nsZn3BVX79CUfvc9YlNVH2Q.
+    >   Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    >   Warning: Permanently added 'ocelisean' (ECDSA) to the list of known hosts.
+    >   Thu 12 Sep 2019 08:16:01 PM BST
+    >   Ocelisean
+
+    exit
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Add the host fingerprints to our local config.
+#[user@desktop]
+
+    #
+    # ....
+    #
+
+
+# -----------------------------------------------------
+# Run our Ansible client.
+#[user@desktop]
+
+    source "${HOME}/korscheltellus.settings"
+    pushd "${KORSCHELTELLUS_CODE:?}"
+
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname ansible-client \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            --volume $(pwd -P)/ansible:/etc/ansible:ro \
+            korscheltellus/ansible-client:latest \
+                bash
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Check we can ssh into the target.
+#[user@ansible-client]
+
+    mkdir ~/.ssh
+
+    ssh -F /etc/ansible/ssh.cfg Ocelisean \
+        "
+        date
+        hostname
+        "
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Check we can ssh into the target.
+#[user@ansible-client]
+
+    mkdir ~/.ssh
+
+    ssh -F /etc/ansible/ssh.cfg Ocelisean \
+        "
+        date
+        hostname
+        "
+
+
+# -----------------------------------------------------
+# Ping each of our machines.
+#[user@ansible-client]
+
+    ansible \
+        all -m ping
+
+
+    #####
+    ##### Can we mount the control channel as a socket inside the container ?
+    ##### It is just a socket ....
+    ##### https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Multiplexing
+    #####
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create our control connection.
+# https://www.anchor.com.au/blog/2010/02/ssh-controlmaster-the-good-the-bad-the-ugly/
+# https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Multiplexing
+#[user@desktop]
+
+    ssh -M -N -n \
+        -S ~/.ssh/esperia \
+        esperia
+
+# -----------------------------------------------------
+# Run our Ansible client, with the control chanel socket mounted as a volume.
+#[user@desktop]
+
+    source "${HOME}/korscheltellus.settings"
+    pushd "${KORSCHELTELLUS_CODE:?}"
+
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname ansible-client \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            --volume $(pwd -P)/ansible:/etc/ansible:ro \
+            --volume ${HOME}/.ssh/esperia:/root/.ssh/esperia \
+            korscheltellus/ansible-client:latest \
+                bash
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Login to one of our target machines.
+#[user@ansible-client]
+
+    ssh -F /etc/ansible/ssh.cfg \
+        Ocelisean \
+        "
+        date
+        hostname
+        "
+
+    >   Warning: Permanently added 'ocelisean' (ECDSA) to the list of known hosts.
+    >   Fri 13 Sep 2019 12:52:30 AM BST
+    >   Ocelisean
+
+
+# -----------------------------------------------------
+# Ping one of our target machines.
+#[user@ansible-client]
+
+    ansible \
+        Ocelisean -m ping
+
+    >   Ocelisean | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+
+
+# -----------------------------------------------------
+# Ping all of our target machines.
+#[user@ansible-client]
+
+    ansible \
+        all -m ping
+
+    >   Ocelisean | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Araeri | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Nyderrad | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Rhoawien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Gwirabard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Boasien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Falidon | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Brawia | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Legendamwen | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Glaubard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+
+
+# -----------------------------------------------------
+# Ping our zookeeper machines.
+#[user@ansible-client]
+
+    ansible \
+        zookeepers \
+            -m ping
+
+    >   Nyderrad | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Ocelisean | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Araeri | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+
+# -----------------------------------------------------
+# Ping our kafka machines.
+#[user@ansible-client]
+
+    ansible \
+        kafkanodes \
+            -m ping
+
+    >   Falidon | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Rhoawien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Brawia | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Gwirabard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Boasien | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+
+# -----------------------------------------------------
+# Ping our mirror maker machines.
+#[user@ansible-client]
+
+    ansible \
+        mirrormakers \
+            -m ping
+
+    >   Legendamwen | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+    >   Glaubard | SUCCESS => {
+    >       "ansible_facts": {
+    >           "discovered_interpreter_python": "/usr/bin/python3"
+    >       },
+    >       "changed": false,
+    >       "ping": "pong"
+    >   }
+
+
+

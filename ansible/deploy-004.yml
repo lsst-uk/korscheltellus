@@ -1,0 +1,80 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+#
+# Partition physical disc /dev/sdb.
+#
+
+---
+- hosts: work01
+  gather_facts: false
+
+  vars:
+    count: 5
+
+  tasks:
+
+    - name: Check we can use sudo
+      become: true
+      ping:
+
+    - name: List the current partitions
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
+    - name: Remove all the current partitions
+      become: true
+      parted:
+        device: /dev/sdb
+        number: '{{ item.num }}'
+        state: absent
+      loop: '{{ sdb_info.partitions }}'
+
+    - name: Create new partitions sdb-[1-{{ count }}]
+      become: true
+      parted:
+        device: /dev/sdb
+        number: "{{ item + 1 }}"
+        label:  gpt
+        state:  present
+        name:   "sdb-{{ item + 1 }}"
+        unit:   '%'
+        part_start: "{{ (item * (100/count)) | int }}%"
+        part_end:   "{{ ((item + 1) * (100/count)) | int }}%"
+      loop: "{{ range(0,count) | list }}"
+
+    - name: List the current partitions
+      become: true
+      parted:
+        device: /dev/sdb
+        unit:   GiB
+      register: sdb_info
+
+    - debug:
+        msg: Partitions {{ sdb_info }}
+
+

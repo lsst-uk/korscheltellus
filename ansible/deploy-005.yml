@@ -1,0 +1,99 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+#
+# Add a partition to each Kafka node.
+#
+
+---
+- hosts: work01
+  gather_facts: false
+
+  tasks:
+
+    - name: Check we can use sudo
+      become: true
+      ping:
+
+    - name: Check pip is installed
+      become: true
+      apt:
+        update_cache: true
+        name:  python3-pip
+        state: present
+
+    - name: Check pkg-config is installed
+      become: true
+      apt:
+        update_cache: true
+        name:  pkg-config
+        state: present
+
+    - name: Check libvirt-dev is installed
+      become: true
+      apt:
+        update_cache: true
+        name:  libvirt-dev
+        state: present
+
+    - name: Check libvirt-python is installed
+      become: true
+      pip:
+        name: [
+            'lxml',
+            'libvirt-python'
+            ]
+        state: latest
+
+    - name: List the storage pools
+      virt_pool:
+        command: list_pools
+      register: pool_list
+    - debug:
+        msg: Pools {{ pool_list }}
+
+#
+#    - name: Define our storage pool
+#      virt_pool:
+#        command: define
+#        name: data
+#        xml: '{{ lookup("template", "data-pool.xml") }}'
+#
+#    - name: Build our storage pool
+#      virt_pool:
+#        command: build
+#        name: data
+#
+#    - name: Start our storage pool
+#      virt_pool:
+#        command: create
+#        name: data
+#
+#    - name: List the storage pools
+#      virt_pool:
+#        command: list_pools
+#
+
+#
+# No Ansible module to attach disc partitions to VMs.
+# Have to do it ourselves ...
+#
+
