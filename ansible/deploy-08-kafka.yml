@@ -20,35 +20,37 @@
 #
 
 #
-# Attach the physical disc partitions to the Kafka nodes.
+# Deploy and start our Kafka services.
 #
 
 ---
-- hosts: work01
+- hosts: kafkas
   gather_facts: false
   become: false
 
+  vars:
+     num_partitions: "{{ 4 * 4 * 16 }}"
+     retention_ms: "{{ 7 * 24 * 60 * 60 * 1000 }}"
+     retention_bytes: "{{ -1 }}"
+
   tasks:
 
-#
-# Check our account is a mamber of 'libvirt' group.
-#
+    - name: "Deploy our Kafka compose file"
+      template:
+        src:  kafka/kafka-compose.yml
+        dest: kafka-compose.yml
+      vars:
+        mntpath: '/data-vdc'
+        logpath: '/data-vdc'
 
-    - name: List the VMs
-      command:
-        argv:
-          - "virsh"
-          - "--connect"
-          - "qemu:///system"
-          - "list"
-          - "--all"
-
-
-    - name: Attach discs to the Kafka VMs
-      include_tasks: deploy-006-01.yml
-      loop: "{{ groups['kafkas'] }}"
-      loop_control:
-        loop_var:  vm_name
-        index_var: vm_index
-
+    - name: "Start our Kafka services"
+      docker_compose:
+        project_src:
+            '.'
+        files:
+          - kafka-compose.yml
+        services:
+          - emily
+        state:
+          present
 

@@ -20,55 +20,51 @@
 #
 
 #
-# Partition physical disc /dev/sdb.
+# Partition the physical disc.
 #
 
 ---
 - hosts: work01
   gather_facts: false
-  become: false
 
   vars:
-    count: 5
+    numpart: '5'
+    devpath: '/dev/sdb'
 
   tasks:
 
-    - name: Check we can use sudo
-      become: true
-      ping:
-
-    - name: List the current partitions
+    - name: "List the current partitions"
       become: true
       parted:
-        device: /dev/sdb
+        device: '{{ devpath }}'
         unit:   GiB
       register: sdb_info
 
     - debug:
-        msg: Partitions {{ sdb_info }}
+        msg: "Partitions {{ sdb_info }}"
 
-    - name: Remove all the current partitions
+    - name: "Remove all the current partitions"
       become: true
       parted:
-        device: /dev/sdb
+        device: '{{ devpath }}'
         number: '{{ item.num }}'
         state: absent
       loop: '{{ sdb_info.partitions }}'
 
-    - name: Create new partitions sdb-[1-{{ count }}]
+    - name: "Create new partitions sdb-[1-{{ numpart }}]"
       become: true
       parted:
         device: /dev/sdb
         number: "{{ item + 1 }}"
         label:  gpt
         state:  present
-        name:   "sdb-{{ item + 1 }}"
+        name:   'sdb-{{ item + 1 }}'
         unit:   '%'
-        part_start: "{{ (item * (100/count)) | int }}%"
-        part_end:   "{{ ((item + 1) * (100/count)) | int }}%"
-      loop: "{{ range(0,count) | list }}"
+        part_start: '{{ (item * (100/numpart)) | int }}%'
+        part_end:   '{{ ((item + 1) * (100/numpart)) | int }}%'
+      loop: '{{ range(0,numpart) | list }}'
 
-    - name: List the current partitions
+    - name: "List the current partitions"
       become: true
       parted:
         device: /dev/sdb
@@ -76,6 +72,6 @@
       register: sdb_info
 
     - debug:
-        msg: Partitions {{ sdb_info }}
+        msg: "Partitions {{ sdb_info }}"
 
 

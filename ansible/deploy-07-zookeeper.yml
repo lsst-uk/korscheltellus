@@ -30,12 +30,12 @@
 
   tasks:
 
-    - name: Install our Zookeeper compose file
+    - name: "Deploy our Zookeeper compose file"
       template:
         src:  zookeeper/zookeeper-compose.yml
         dest: zookeeper-compose.yml
 
-    - name: Start our Zookeeper services
+    - name: "Start our Zookeeper services"
       docker_compose:
         project_src:
             '.'

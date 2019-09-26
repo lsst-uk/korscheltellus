@@ -20,38 +20,19 @@
 #
 
 #
-# Add a disc partition to a virtual machine.
+# SSH connection check.
 #
 
-- name: Shutdown VM {{ vm_name }}
-  command:
-    argv:
-      - "virsh"
-      - "--connect"
-      - "qemu:///system"
-      - "shutdown"
-      - "{{ vm_name }}"
+---
+- hosts: dockers
+  gather_facts: false
 
-- name: Attach partition sdb{{ vm_index + 1 }} to VM {{ vm_name }}
-  command:
-    argv:
-      - "virsh"
-      - "--connect"
-      - "qemu:///system"
-      - "attach-disk"
-      - "{{ vm_name }}"
-      - "/dev/sdb{{ vm_index + 1 }}"
-      - "vdc"
-      - "--sourcetype"
-      - "block"
-      - "--config"
+  tasks:
 
-- name: Start VM {{ vm_name }}
-  command:
-    argv:
-      - "virsh"
-      - "--connect"
-      - "qemu:///system"
-      - "start"
-      - "{{ vm_name }}"
+    - name: "Check we can connect"
+      ping:
+
+    - name: "Check we can use sudo"
+      become: true
+      ping:
 

@@ -20,37 +20,38 @@
 #
 
 #
-# Deploy and start our Kafka services.
+# Attach a disc partition to a virtual machine.
 #
 
----
-- hosts: kafkas
-  gather_facts: false
-  become: false
+- name: "Shutdown VM {{ vm_name }}"
+  command:
+    argv:
+      - "virsh"
+      - "--connect"
+      - "qemu:///system"
+      - "shutdown"
+      - "{{ vm_name }}"
 
-  vars:
-     num_partitions: "{{ 4 * 4 * 16 }}"
-     retention_ms: "{{ 7 * 24 * 60 * 60 * 1000 }}"
-     retention_bytes: "{{ -1 }}"
+- name: "Attach partition sdb{{ vm_index + 1 }} to VM {{ vm_name }}"
+  command:
+    argv:
+      - "virsh"
+      - "--connect"
+      - "qemu:///system"
+      - "attach-disk"
+      - "{{ vm_name }}"
+      - "/dev/sdb{{ vm_index + 1 }}"
+      - "vdc"
+      - "--sourcetype"
+      - "block"
+      - "--config"
 
-  tasks:
-
-    - name: Install our Kafka compose file
-      template:
-        src:  kafka/kafka-compose.yml
-        dest: kafka-compose.yml
-      vars:
-        mntpath: '/data-vdc'
-        logpath: '/data-vdc'
-
-    - name: Start our Kafka services
-      docker_compose:
-        project_src:
-            '.'
-        files:
-          - kafka-compose.yml
-        services:
-          - emily
-        state:
-          present
+- name: "Start VM {{ vm_name }}"
+  command:
+    argv:
+      - "virsh"
+      - "--connect"
+      - "qemu:///system"
+      - "start"
+      - "{{ vm_name }}"
 

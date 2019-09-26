@@ -20,20 +20,20 @@
 #
 
 #
-# SSH connection check.
+# Attach the physical disc partitions to our Kafka nodes.
 #
 
 ---
-- hosts: dockers
+- hosts: work01
   gather_facts: false
-  become: false
 
   tasks:
 
-    - name: "Check we can connect"
-      ping:
+    - name: "Attach discs to the Kafka VMs"
+      include_tasks: libvirt-attach.yml
+      loop: "{{ groups['kafkas'] }}"
+      loop_control:
+        loop_var:  vm_name
+        index_var: vm_index
 
-    - name: "Check we can use sudo"
-      become: true
-      ping:
 
