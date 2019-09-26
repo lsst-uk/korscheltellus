@@ -26,6 +26,8 @@
 ---
 - hosts: zookeepers
   gather_facts: false
+  become: false
+
   tasks:
 
     - name: Install our Zookeeper compose file

@@ -20,14 +20,19 @@
 #
 
 #
-# Add a partition to each Kafka node.
+# Attach the physical disc partitions to the Kafka nodes.
 #
 
 ---
 - hosts: work01
   gather_facts: false
+  become: false
 
   tasks:
+
+#
+# Check our account is a mamber of 'libvirt' group.
+#
 
     - name: List the VMs
       command:

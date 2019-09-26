@@ -28,6 +28,7 @@
 - hosts: dockers
   gather_facts: false
   become: true
+
   tasks:
 
   - name: Remove Fedora Docker packages

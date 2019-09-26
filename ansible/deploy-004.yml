@@ -26,6 +26,7 @@
 ---
 - hosts: work01
   gather_facts: false
+  become: false
 
   vars:
     count: 5

@@ -1,0 +1,146 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new set of empty VMs.
+#[user@work01]
+
+
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our Ansible client.
+#[user@desktop]
+
+    source "${HOME}/korscheltellus.settings"
+    pushd  "${KORSCHELTELLUS_CODE:?}"
+
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname ansible-client \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            --volume $(pwd)/ansible:/etc/ansible:ro \
+            atolmis/ansible-client:latest \
+                bash
+
+
+
+# -----------------------------------------------------
+# Create a home ssh directory for root.
+#[root@ansible-client]
+
+    mkdir /root/.ssh
+
+
+# -----------------------------------------------------
+# Login to the gateway to accept the host keys.
+#[root@ansible-client]
+
+    ssh \
+        -F /etc/ansible/ssh.cfg \
+        esperia \
+        '
+        date
+        hostname
+        '
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Check we can login via Ansible and use sudo.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-001.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Check Docker is installed on the target VMs.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-002.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Partition the physical disc.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Attach the partitions to the VMs.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-006.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Create the filesystem and mount the discs in the VMs.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-007.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Start our Zookeeepr services.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-008.yml
+
+--START--
+--END--
+

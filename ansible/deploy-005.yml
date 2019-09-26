@@ -20,12 +20,16 @@
 #
 
 #
-# Add a partition to each Kafka node.
+# NOT USED
+# Explore Ansible support for libvirt and virsh.
+# Can't find an Ansible module to attach disc partitions to VMs.
+# Probably have to do it ourselves ... see deploy-006.yml.
 #
 
 ---
 - hosts: work01
   gather_facts: false
+  become: false
 
   tasks:
 

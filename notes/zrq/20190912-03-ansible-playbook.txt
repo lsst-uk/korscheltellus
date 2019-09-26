@@ -20,6 +20,13 @@
 #
 #
 
+    #
+    # Deprecated waring.
+    # These notes use the deprecated korscheltellus/ansible-client image.
+    # Moved the ansible-client to a shared project, atolmis/ansible-client
+    # Issues with user ID still need to be figured out.
+    #
+
 # -----------------------------------------------------
 # Create our control connection.
 # https://www.anchor.com.au/blog/2010/02/ssh-controlmaster-the-good-the-bad-the-ugly/
@@ -64,17 +71,17 @@
         /etc/ansible/deploy-001.yml
 
     >   PLAY [zookeepers] ***************************************************************************************************
-    >   
+    >
     >   TASK [Gathering Facts] **********************************************************************************************
     >   ok: [Nyderrad]
     >   ok: [Araeri]
     >   ok: [Ocelisean]
-    >   
+    >
     >   TASK [Check Docker] *************************************************************************************************
     >   ok: [Nyderrad]
     >   ok: [Ocelisean]
     >   ok: [Araeri]
-    >   
+    >
     >   PLAY RECAP **********************************************************************************************************
     >   Araeri                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
     >   Nyderrad                   : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
@@ -90,17 +97,17 @@
         /etc/ansible/deploy-002.yml
 
     >   PLAY [zookeepers] ***************************************************************************************************
-    >   
+    >
     >   TASK [Gathering Facts] **********************************************************************************************
     >   ok: [Nyderrad]
     >   ok: [Araeri]
     >   ok: [Ocelisean]
-    >   
+    >
     >   TASK [Install compose YAML file] ************************************************************************************
     >   changed: [Araeri]
     >   changed: [Nyderrad]
     >   changed: [Ocelisean]
-    >   
+    >
     >   PLAY RECAP **********************************************************************************************************
     >   Araeri                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
     >   Nyderrad                   : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
@@ -116,17 +123,17 @@
         /etc/ansible/deploy-003.yml
 
     >   PLAY [zookeepers] ***************************************************************************************************************************************************************************************************************************
-    >   
+    >
     >   TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
     >   ok: [Ocelisean]
     >   ok: [Nyderrad]
     >   ok: [Araeri]
-    >   
+    >
     >   TASK [Install compose ENV file] *************************************************************************************************************************************************************************************************************
     >   changed: [Nyderrad]
     >   changed: [Araeri]
     >   changed: [Ocelisean]
-    >   
+    >
     >   PLAY RECAP **********************************************************************************************************************************************************************************************************************************
     >   Araeri                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
     >   Nyderrad                   : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
@@ -171,18 +178,18 @@
     >   #   </meta:licence>
     >   # </meta:header>
     >   #
-    >   
+    >
     >   version: '3'
-    >   
+    >
     >   networks:
     >       zookeeper:
-    >   
+    >
     >   volumes:
     >       zklog:
     >       zkdata:
-    >   
+    >
     >   services:
-    >   
+    >
     >       courtney:
     >           image:
     >               confluentinc/cp-zookeeper:4.1.1
@@ -203,8 +210,8 @@
     >               - "zkdata:/var/lib/zookeeper/data"
     >           networks:
     >               - zookeeper
-    >   
-    >   
+    >
+    >
     >   ---- zookeeper.env ----
     >   #
     >   # <meta:header>
@@ -226,7 +233,7 @@
     >   #   </meta:licence>
     >   # </meta:header>
     >   #
-    >   
+    >
     >   ZOOKEEPER_SERVER_ID=2
     >   ZOOKEEPER_SERVERS=Ocelisean:2888:3888;0.0.0.0:2888:3888;Nyderrad:2888:3888
 
