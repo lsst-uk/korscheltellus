@@ -29,6 +29,7 @@
   become: false
 
   vars:
+     num_partitions: "{{ 4 * 4 * 16 }}"
      retention_ms: "{{ 7 * 24 * 60 * 60 * 1000 }}"
      retention_bytes: "{{ -1 }}"
 
