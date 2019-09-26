@@ -35,7 +35,7 @@
         src:  zookeeper/zookeeper-compose.yml
         dest: zookeeper-compose.yml
 
-    - name: Start our Zookeeper service
+    - name: Start our Zookeeper services
       docker_compose:
         project_src:
             '.'

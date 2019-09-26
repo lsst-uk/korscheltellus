@@ -38,7 +38,7 @@
         mntpath: '/data-vdc'
         logpath: '/data-vdc'
 
-    - name: Start our Kafka service
+    - name: Start our Kafka services
       docker_compose:
         project_src:
             '.'

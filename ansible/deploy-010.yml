@@ -29,11 +29,12 @@
   become: false
 
   vars:
-    topicdate:  "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}"
-    roeconnect: "{{ groups['kafkas'] | join(':9092,') }}:9092"
-    ztfconnect: "public.alerts.ztf.uw.edu:9092"
-    roegroupid: "ztf-mirror.roe.ac.uk"
     numstreams: 4
+#   ztfconnect: "public.alerts.ztf.uw.edu:9092"
+    ztfconnect: "Stedigo.esperia:9092"
+    roegroupid: "{{ groups['mirrors'][0] | lower }}.ztf-mirror.roe.ac.uk"
+    roeconnect: "{{ groups['kafkas'] | join(':9092,') }}:9092"
+    topicdate:  "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}"
     topiclist: [
         "ztf_{{ topicdate }}_programid1",
         "ztf_{{ topicdate }}_programid3_public"
@@ -56,4 +57,14 @@
         src:  mirror/mirror-compose.yml
         dest: mirror-compose.yml
 
+    - name: Start our MirrorMaker services
+      docker_compose:
+        project_src:
+            '.'
+        files:
+          - mirror-compose.yml
+        services:
+          - tina
+        state:
+          present
 
