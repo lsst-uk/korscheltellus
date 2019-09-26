@@ -20,6 +20,12 @@
 #
 #
 
+    #
+    # Deprecated waring.
+    # These notes use the deprecated korscheltellus/ansible-client image.
+    # Moved the ansible-client to a shared project, atolmis/ansible-client
+    # Issues with user ID still need to be figured out.
+    #
 
 # -----------------------------------------------------
 # Create our control connection.
@@ -66,27 +72,27 @@
         /etc/ansible/deploy-004.yml
 
     >   PLAY [zookeepers] ***************************************************************************************************
-    >   
+    >
     >   TASK [Gathering Facts] **********************************************************************************************
     >   ok: [Araeri]
     >   ok: [Ocelisean]
     >   ok: [Nyderrad]
-    >   
+    >
     >   TASK [Check the Docker service is started.] *************************************************************************
     >   ok: [Ocelisean]
     >   ok: [Araeri]
     >   ok: [Nyderrad]
-    >   
+    >
     >   TASK [Install our Zookeeper compose file.] **************************************************************************
     >   changed: [Araeri]
     >   changed: [Nyderrad]
     >   changed: [Ocelisean]
-    >   
+    >
     >   TASK [Start our Zookeeper service.] *********************************************************************************
     >   fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Ocelisean's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
     >   fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Araeri's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
     >   fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (Docker SDK for Python: docker (Python >= 2.7) or docker-py (Python 2.6)) on Nyderrad's Python /usr/bin/python3. Please read module documentation and install in the appropriate location, for example via `pip install docker` or `pip install docker-py` (Python 2.6). The error was: No module named 'docker'"}
-    >   
+    >
     >   PLAY RECAP **********************************************************************************************************
     >   Araeri                     : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
     >   Nyderrad                   : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
@@ -262,32 +268,32 @@
         /etc/ansible/deploy-004.yml
 
     >   PLAY [zookeepers] ***************************************************************************************************
-    >   
+    >
     >   TASK [Gathering Facts] **********************************************************************************************
     >   ok: [Nyderrad]
     >   ok: [Araeri]
     >   ok: [Ocelisean]
-    >   
+    >
     >   TASK [Check the Docker service is started.] *************************************************************************
     >   ok: [Araeri]
     >   ok: [Ocelisean]
     >   ok: [Nyderrad]
-    >   
+    >
     >   TASK [Install Python Docker libraries for Ansible to use.] **********************************************************
     >   changed: [Araeri]
     >   changed: [Ocelisean]
     >   changed: [Nyderrad]
-    >   
+    >
     >   TASK [Install our Zookeeper compose file.] **************************************************************************
     >   ok: [Araeri]
     >   ok: [Ocelisean]
     >   ok: [Nyderrad]
-    >   
+    >
     >   TASK [Start our Zookeeper service.] *********************************************************************************
     >   fatal: [Nyderrad]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
     >   fatal: [Ocelisean]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
     >   fatal: [Araeri]: FAILED! => {"changed": false, "msg": "Parameter error - project_src required."}
-    >   
+    >
     >   PLAY RECAP **********************************************************************************************************
     >   Araeri                     : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
     >   Nyderrad                   : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
@@ -383,7 +389,7 @@
     >   changed: [Araeri]
     >   changed: [Nyderrad]
     >   changed: [Ocelisean]
-    >   
+    >
     >   PLAY RECAP **********************************************************************************************************
     >   Araeri                     : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
     >   Nyderrad                   : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0

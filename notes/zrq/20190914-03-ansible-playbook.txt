@@ -20,6 +20,13 @@
 #
 #
 
+    #
+    # Deprecated waring.
+    # These notes use the deprecated korscheltellus/ansible-client image.
+    # Moved the ansible-client to a shared project, atolmis/ansible-client
+    # Issues with user ID still need to be figured out.
+    #
+
 # -----------------------------------------------------
 # Create our control connection.
 # https://www.anchor.com.au/blog/2010/02/ssh-controlmaster-the-good-the-bad-the-ugly/

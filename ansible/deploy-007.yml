@@ -19,67 +19,86 @@
 # </meta:header>
 #
 
-#---------------------------------------------------------------------
-# Check if the new device has a filesystem.
 
-    echo "Checking for btrfs filesystem on [${devpath:?}]"
-    sudo btrfs filesystem show "${devpath:?}" > /dev/null 2>&1
-    fscheck=$?
+#
+# Format the data disc on each Kafka node.
+#
 
-#---------------------------------------------------------------------
-# Create a filesystem on the new device.
+---
+- hosts: kafkas
+  gather_facts: false
+  become: true
 
-    if [ ${fscheck} == 0 ]
-    then
-        echo "Found btrfs filesystem on [${devpath:?}]"
-    else
-        echo "Creating btrfs filesystem on [${devpath:?}]"
-        sudo \
-            mkfs.btrfs \
-                ${devpath:?}
-    fi
+  vars:
+    devpath: '/dev/vdc'
+    mntpath: '/data-vdc'
 
-#---------------------------------------------------------------------
-# Create our mount point.
+  tasks:
 
-    echo "Checking mount point [${mntpath:?}]"
-    if [ -e "${mntpath:?}" ]
-    then
-        echo "Found mount point [${mntpath:?}]"
-    else
-        echo "Creating mount point [${mntpath:?}]"
-        sudo mkdir -p "${mntpath:?}"
-        sudo touch "${mntpath:?}/mount-failed"
-    fi
+    - stat:
+        path: "{{devpath}}"
+      register: devstat
 
-#---------------------------------------------------------------------
-# Add the volume to our FileSystemTABle.
-# https://www.howtoforge.com/reducing-disk-io-by-mounting-partitions-with-noatime
+    - stat:
+        path: "{{mntpath}}"
+      register: mntstat
 
-    devuuid=$(
-        lsblk --noheadings --output UUID "${devpath:?}"
-        )
+    - debug:
+        msg: "Before dev stat {{devstat}}"
 
-    echo "Checking for device UUID [${devuuid:?}]"
-    if [ $(grep -c "${devuuid:?}" /etc/fstab) == 1 ]
-    then
-        echo "Found device UUID [${devuuid:?}]"
-    else
-        echo "Adding device UUID [${devuuid:?}]"
-        sudo tee -a /etc/fstab << EOTAB
-UUID=${devuuid:?} ${mntpath:?}    btrfs    defaults,noatime    0  0
-EOTAB
-    fi
+    - debug:
+        msg: "Before mnt stat {{mntstat}}"
 
-#---------------------------------------------------------------------
-# Mount the new volume.
+    # TODO Only do this if not already created
+    - name: "Create a btrfs filesystem on {{devpath}}"
+      filesystem:
+        fstype: btrfs
+        dev: "{{devpath}}"
 
-    sudo \
-        mount "${mntpath:?}"
+    # TODO Only do this if not already created
+    - name: Create the mount point {{mntpath}}
+      file:
+        path: "{{mntpath}}"
+        state: directory
 
-#---------------------------------------------------------------------
-# Check the new volume.
+    # TODO Only do this if not already mounted
+    - name: Create the mount-failed indicator
+      file:
+        path: "{{mntpath}}/mount-failed"
+        state: touch
+        mode:  u=r,g=r,o=r
 
-    echo "Checking data space on [${mntpath:?}]"
-    df -h "${mntpath:?}"
+    # TODO Only do this if not already mounted
+    # TODO Mount using UUID rather than device path.
+    - name: Mount the device
+      mount:
+        src:  "{{devpath}}"
+        path: "{{mntpath}}"
+        fstype: btrfs
+        state:  mounted
+
+    - stat:
+        path: "{{devpath}}"
+      register: devstat
+
+    - stat:
+        path: "{{mntpath}}"
+      register: mntstat
+
+    - command:
+        argv:
+          - 'df'
+          - '--human-readable'
+          - "{{mntpath}}"
+      register: dfcheck
+
+    - debug:
+        msg: "After dev stat {{devstat}}"
+
+    - debug:
+        msg: "After mnt stat {{mntstat}}"
+
+    - debug:
+        msg: "After space {{dfcheck}}"
+
 

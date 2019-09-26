@@ -11,16 +11,16 @@ services:
             - "9092:9092"
             - "9093:9093"
         extra_hosts:
-            - "${KAFKA_HOSTNAME}:127.0.0.2"
+            - "{{ inventory_hostname }}:127.0.0.2"
         environment:
             - "KAFKA_LISTENERS=jasminum://0.0.0.0:9092"
-            - "KAFKA_ADVERTISED_LISTENERS=jasminum://${KAFKA_HOSTNAME}:9092"
+            - "KAFKA_ADVERTISED_LISTENERS=jasminum://{{ inventory_hostname }}:9092"
             - "KAFKA_INTER_BROKER_LISTENER_NAME=jasminum"
             - "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=jasminum:PLAINTEXT"
-            - "KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS}"
-            - "KAFKA_BROKER_ID=${KAFKA_BROKER_ID}"
-            - "KAFKA_BROKER_RACK=${KAFKA_BROKER_RACK}"
-            - "KAFKA_ZOOKEEPER_CONNECT=${KAFKA_ZOOKEEPER_CONNECT}"
+            - "KAFKA_LOG_DIRS={{ logpath }}"
+            - "KAFKA_BROKER_ID={{ groups['kafkas'].index(inventory_hostname) + 1 }}"
+            - "KAFKA_BROKER_RACK={{ groups['kafkas'].index(inventory_hostname) + 1 }}"
+            - "KAFKA_ZOOKEEPER_CONNECT={{ groups['zookeepers'] | join(',') }}"
             - "KAFKA_NUM_PARTITIONS=16"
             - "KAFKA_DEFAULT_REPLICATION_FACTOR=3"
             - "KAFKA_LOG_RETENTION_MS=-1"
@@ -29,6 +29,6 @@ services:
             - "KAFKA_MESSAGE_MAX_BYTES=10485760"
         volumes:
             - type:   "bind"
-              source: "${volmnt}"
-              target: "${volmnt}"
+              source: "{{ mntpath }}"
+              target: "{{ logpath }}"
 

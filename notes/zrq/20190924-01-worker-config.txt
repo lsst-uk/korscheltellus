@@ -20,53 +20,216 @@
 #
 #
 
+
 # -----------------------------------------------------
-# Create our control connection.
-# https://www.anchor.com.au/blog/2010/02/ssh-controlmaster-the-good-the-bad-the-ugly/
-# https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Multiplexing
+# -----------------------------------------------------
+# Run our Ansible client.
 #[user@desktop]
 
-    control=${HOME}/.ssh/esperia
-    echo "Checking [${control}]"
-    if [ ! -S "${control}" ]
-    then
-        echo "Removing [${control}]"
-        rm -rf "${control:?}"
-        ssh -M -N -n \
-            -S "${control:?}" \
-            esperia
-    fi
+    source "${HOME}/korscheltellus.settings"
+    pushd  "${KORSCHELTELLUS_CODE:?}"
 
-# -----------------------------------------------------
-# Run our Ansible client, with the control chanel socket mounted as a volume.
-# **(this works for a while, but the control chanel will evenatually timeout)
-#[user@desktop]
-
-    source ${HOME}/korscheltellus.settings
-
-    docker run \
-        --rm \
-        --tty \
-        --interactive \
-        --hostname ansible-client \
-        --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
-        --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
-        --volume ${KORSCHELTELLUS_CODE:?}/ansible:/etc/ansible:ro \
-        atolmis/ansible-client:latest \
-            bash
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname ansible-client \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            --volume $(pwd)/ansible:/etc/ansible:ro \
+            atolmis/ansible-client:latest \
+                bash
 
 
-        --volume ${HOME}/.ssh/esperia:/tmp/esperia \
-
-
-# -----------------------------------------------------
 # -----------------------------------------------------
 # Run our Ansible test playbooks.
-#[user@ansible-client]
+#[root@ansible-client]
 
     ansible-playbook \
         --inventory /etc/ansible/hosts.yml \
-        /etc/ansible/workers-ping.yml
+        /etc/ansible/deploy-001.yml
+
+--START--
+PLAY [dockers] ****....
+
+TASK [Check we can connect] ****....
+The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? fatal: [Ocelisean]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: Connection timed out during banner exchange", "unreachable": true}
+fatal: [Araeri]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: Connection timed out during banner exchange", "unreachable": true}
+fatal: [Nyderrad]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: Connection timed out during banner exchange", "unreachable": true}
+fatal: [Rhoawien]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: Connection timed out during banner exchange", "unreachable": true}
+fatal: [Gwirabard]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: Connection timed out during banner exchange", "unreachable": true}
+--END--
+
+    #
+    # Need to accept the host keys before we can run Ansible scripts.
+    #
+
+# -----------------------------------------------------
+# Login to the gateway using the Ansible ssh config to accept the host keys.
+#[root@ansible-client]
+
+    ssh \
+        -F /etc/ansible/ssh.cfg \
+        esperia \
+        '
+        date
+        hostname
+        '
+
+--START--
+The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Failed to add the host to the list of known hosts (/root/.ssh/known_hosts).
+Wed 25 Sep 15:22:31 BST 2019
+lssthead
+--END--
 
 
+# -----------------------------------------------------
+# Create a home ssh direcory for root.
+#[root@ansible-client]
+
+    mkdir /root/.ssh
+
+
+# -----------------------------------------------------
+# Login to the gateway using the Ansible ssh config to accept the host keys.
+#[root@ansible-client]
+
+    ssh \
+        -F /etc/ansible/ssh.cfg \
+        esperia \
+        '
+        date
+        hostname
+        '
+
+--START--
+The authenticity of host '192.41.108.44 (192.41.108.44)' can't be established.
+ECDSA key fingerprint is SHA256:jCWHt7d/fVNH0VBOpuR+OZgxmPDaF4/9b9te7kPLo7E.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.41.108.44' (ECDSA) to the list of known hosts.
+Wed 25 Sep 15:24:13 BST 2019
+lssthead
+--END--
+
+
+# -----------------------------------------------------
+# Login again, and the host key check passes.
+#[root@ansible-client]
+
+    ssh \
+        -F /etc/ansible/ssh.cfg \
+        esperia \
+        '
+        date
+        hostname
+        '
+
+--START--
+Wed 25 Sep 15:24:53 BST 2019
+lssthead
+--END--
+
+
+# -----------------------------------------------------
+# Check we can login and use sudo.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-001.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Check Docker is installed on the target VMs.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-002.yml
+
+--START--
+--END--
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Partition the physical disc.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-004.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Attach the partitions to the VMs.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-006.yml
+
+--START--
+--END--
+
+
+# -----------------------------------------------------
+# Create the filesystem and moun the discs in the VMs.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-007.yml
+
+--START--
+--END--
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Start our Zookeeepr services.
+#[root@ansible-client]
+
+    ansible-playbook \
+        --inventory /etc/ansible/hosts.yml \
+        /etc/ansible/deploy-003.yml
+
+--START--
+--END--
 
