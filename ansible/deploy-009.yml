@@ -28,6 +28,10 @@
   gather_facts: false
   become: false
 
+  vars:
+     retention_ms: "{{ 7 * 24 * 60 * 60 * 1000 }}"
+     retention_bytes: "{{ -1 }}"
+
   tasks:
 
     - name: Install our Kafka compose file

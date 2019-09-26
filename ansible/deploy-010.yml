@@ -35,9 +35,12 @@
     roegroupid: "{{ groups['mirrors'][0] | lower }}.ztf-mirror.roe.ac.uk"
     roeconnect: "{{ groups['kafkas'] | join(':9092,') }}:9092"
     topicdate:  "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}"
+#   topiclist: [
+#       "ztf_{{ topicdate }}_programid1",
+#       "ztf_{{ topicdate }}_programid3_public"
+#       ]
     topiclist: [
-        "ztf_{{ topicdate }}_programid1",
-        "ztf_{{ topicdate }}_programid3_public"
+        "ztf_20190920_programid1"
         ]
 
   tasks:
