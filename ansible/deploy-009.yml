@@ -32,8 +32,8 @@
 
     - name: Install our Kafka compose file
       template:
-        src:  kafka.yml
-        dest: kafka.yml
+        src:  kafka/kafka-compose.yml
+        dest: kafka-compose.yml
       vars:
         mntpath: '/data-vdc'
         logpath: '/data-vdc'
@@ -43,7 +43,7 @@
         project_src:
             '.'
         files:
-          - kafka.yml
+          - kafka-compose.yml
         services:
           - emily
         state:
