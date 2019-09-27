@@ -1,0 +1,64 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+#
+# Add a cron tab to automatically update the topic.
+#
+
+---
+- hosts: mirrors
+  gather_facts: true
+
+  tasks:
+
+  - name: "Check the cron daemon is installed"
+    become: true
+    dnf:
+      name:  cronie
+      state: present
+
+  - name: "Check the cron daemon is enabled and started"
+    become: true
+    systemd:
+      enabled: true
+      name:  crond
+      state: started
+
+  - name: "Create the user's bin directory"
+    file:
+      path: 'bin'
+      state: directory
+
+  - name: "Deploy our topic update script"
+    copy:
+      src:  'mirror/bin/update-topic.sh'
+      dest: 'bin/update-topic.sh'
+      mode: 'u=rx,g=,o='
+
+  - name: "Install our crontab entry"
+    cron:
+      name:   "Update topics"
+      user:   "{{ansible_env.USER}}"
+      minute: '3'
+      hour:   '2'
+      job:    "{{ansible_env.HOME}}/bin/update-topic.sh"
+
+

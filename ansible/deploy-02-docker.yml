@@ -62,9 +62,10 @@
      name:  docker-ce
      state: latest
 
-  - name: "Check Docker service is started"
+  - name: "Check Docker service is enabled and started"
     become: true
     systemd:
+      enabled: true
       name:  docker
       state: started
 

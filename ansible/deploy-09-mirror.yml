@@ -47,27 +47,27 @@
 
     - name: "Deploy our MirrorMaker producer config"
       template:
-        src:  mirror/producer.config
-        dest: producer.config
+        src:  'mirror/producer.config'
+        dest: 'producer.config'
 
     - name: "Deploy our MirrorMaker consumer config"
       template:
-        src:  mirror/consumer.config
-        dest: consumer.config
+        src:  'mirror/consumer.config'
+        dest: 'consumer.config'
 
     - name: "Deploy our MirrorMaker compose file"
       template:
-        src:  mirror/mirror-compose.yml
-        dest: mirror-compose.yml
+        src:  'mirror/mirror-compose.yml'
+        dest: 'mirror-compose.yml'
 
     - name: "Start our MirrorMaker services"
       docker_compose:
         project_src:
             '.'
         files:
-          - mirror-compose.yml
+          - 'mirror-compose.yml'
         services:
-          - tina
+          - 'tina'
         state:
           present
 

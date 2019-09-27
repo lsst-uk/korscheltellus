@@ -1,4 +1,4 @@
-#
+#!/bin/sh
 # <meta:header>
 #   <meta:licence>
 #     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
@@ -19,28 +19,42 @@
 # </meta:header>
 #
 
-version: "3.2"
+#
+# Update our topic names.
+topicdate="$(date -d today +%Y%m%d)"
+topiclist=(
+    "ztf_${topicdate}_programid1"
+    "ztf_${topicdate}_programid3_public"
+    )
 
-services:
+# https://stackoverflow.com/a/11360591
+topicfoo="${topiclist[@]}"
+topicbar=${topicfoo// /,}
 
-    tina:
 
-        image:
-            atolmis/kafka
-        volumes:
-            - ${HOME}/producer.config:/etc/mirror/producer.config
-            - ${HOME}/consumer.config:/etc/mirror/consumer.config
-        environment:
-                KAFKA_HEAP_OPTS: -Xmx1G
-        command: [
-             "bin/kafka-mirror-maker.sh",
-             "--num.streams",
-             "{{ numstreams }}",
-             "--consumer.config",
-             "/etc/mirror/consumer.config",
-             "--producer.config",
-             "/etc/mirror/producer.config",
-             "--whitelist",
-             "{{ topiclist | join(',') }}"
-             ]
+#
+# Stop the MirrorMaker process.
+docker-compose \
+    --file "${HOME}/mirror-compose.yml" \
+    down
+
+#
+# Update the topic names.
+sed -E -i '
+    /whitelist/,/]/ {
+        /(whitelist|])/ !{
+            s/"[^"]*"/"'${topicbar}'"/
+            }
+        }
+    ' mirror-compose.yml
+
+#
+# Start the MirrorMaker process.
+docker-compose \
+    --file "${HOME}/mirror-compose.yml" \
+    up --detach \
+        tina
+
+
+
 
