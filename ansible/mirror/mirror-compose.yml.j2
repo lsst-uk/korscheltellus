@@ -19,21 +19,28 @@
 # </meta:header>
 #
 
-#
-# SSH connection check.
-#
+version: "3.2"
 
----
-- hosts: dockers
-  gather_facts: false
-  become: false
+services:
 
-  tasks:
+    tina:
 
-    - name: "Check we can connect"
-      ping:
-
-    - name: "Check we can use sudo"
-      become: true
-      ping:
+        image:
+            atolmis/kafka
+        volumes:
+            - ${HOME}/producer.config:/etc/mirror/producer.config
+            - ${HOME}/consumer.config:/etc/mirror/consumer.config
+        environment:
+                KAFKA_HEAP_OPTS: -Xmx1G
+        command: [
+             "bin/kafka-mirror-maker.sh",
+             "--num.streams",
+             "{{ numstreams }}",
+             "--consumer.config",
+             "/etc/mirror/consumer.config",
+             "--producer.config",
+             "/etc/mirror/producer.config",
+             "--whitelist",
+             "{{ topiclist | join(',') }}"
+             ]
 

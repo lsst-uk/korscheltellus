@@ -20,32 +20,19 @@
 #
 
 #
-# Deploy and start our Kafka services.
+# SSH connection check.
 #
 
 ---
-- hosts: kafkas
+- hosts: dockers
   gather_facts: false
-  become: false
 
   tasks:
 
-    - name: Install our Kafka compose file
-      template:
-        src:  kafka.yml
-        dest: kafka.yml
-      vars:
-        mntpath: '/data-vdc'
-        logpath: '/data-vdc'
+    - name: "Check we can connect"
+      ping:
 
-    - name: Start our Kafka service
-      docker_compose:
-        project_src:
-            '.'
-        files:
-          - kafka.yml
-        services:
-          - emily
-        state:
-          present
+    - name: "Check we can use sudo"
+      become: true
+      ping:
 

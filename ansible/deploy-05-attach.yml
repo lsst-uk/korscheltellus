@@ -20,38 +20,20 @@
 #
 
 #
-# Add a disc partition to a virtual machine.
+# Attach the physical disc partitions to our Kafka nodes.
 #
 
-- name: Shutdown VM {{ vm_name }}
-  command:
-    argv:
-      - "virsh"
-      - "--connect"
-      - "qemu:///system"
-      - "shutdown"
-      - "{{ vm_name }}"
+---
+- hosts: work01
+  gather_facts: false
 
-- name: Attach partition sdb{{ vm_index + 1 }} to VM {{ vm_name }}
-  command:
-    argv:
-      - "virsh"
-      - "--connect"
-      - "qemu:///system"
-      - "attach-disk"
-      - "{{ vm_name }}"
-      - "/dev/sdb{{ vm_index + 1 }}"
-      - "vdc"
-      - "--sourcetype"
-      - "block"
-      - "--config"
+  tasks:
 
-- name: Start VM {{ vm_name }}
-  command:
-    argv:
-      - "virsh"
-      - "--connect"
-      - "qemu:///system"
-      - "start"
-      - "{{ vm_name }}"
+    - name: "Attach discs to the Kafka VMs"
+      include_tasks: libvirt-attach.yml
+      loop: "{{ groups['kafkas'] }}"
+      loop_control:
+        loop_var:  vm_name
+        index_var: vm_index
+
 

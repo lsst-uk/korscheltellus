@@ -1,0 +1,73 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+#
+# Deploy and start our MirrorMaker services.
+#
+
+---
+- hosts: mirrors
+  gather_facts: true
+  become: false
+
+  vars:
+    numstreams: 4
+#   ztfconnect: "public.alerts.ztf.uw.edu:9092"
+    ztfconnect: "Stedigo.esperia:9092"
+    roegroupid: "{{ groups['mirrors'][0] | lower }}.ztf-mirror.roe.ac.uk"
+    roeconnect: "{{ groups['kafkas'] | join(':9092,') }}:9092"
+    topicdate:  "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}"
+#   topiclist: [
+#       "ztf_{{ topicdate }}_programid1",
+#       "ztf_{{ topicdate }}_programid3_public"
+#       ]
+    topiclist: [
+        "ztf_20190920_programid1"
+        ]
+
+  tasks:
+
+    - name: "Deploy our MirrorMaker producer config"
+      template:
+        src:  'mirror/producer.config'
+        dest: 'producer.config'
+
+    - name: "Deploy our MirrorMaker consumer config"
+      template:
+        src:  'mirror/consumer.config'
+        dest: 'consumer.config'
+
+    - name: "Deploy our MirrorMaker compose file"
+      template:
+        src:  'mirror/mirror-compose.yml'
+        dest: 'mirror-compose.yml'
+
+    - name: "Start our MirrorMaker services"
+      docker_compose:
+        project_src:
+            '.'
+        files:
+          - 'mirror-compose.yml'
+        services:
+          - 'tina'
+        state:
+          present
+

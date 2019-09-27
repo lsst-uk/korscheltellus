@@ -1,4 +1,4 @@
-#
+#!/bin/sh
 # <meta:header>
 #   <meta:licence>
 #     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
@@ -20,35 +20,41 @@
 #
 
 #
-# Attach the physical disc partitions to the Kafka nodes.
+# Update our topic names.
+topicdate="$(date -d today +%Y%m%d)"
+topiclist=(
+    "ztf_${topicdate}_programid1"
+    "ztf_${topicdate}_programid3_public"
+    )
+
+# https://stackoverflow.com/a/11360591
+topicfoo="${topiclist[@]}"
+topicbar=${topicfoo// /,}
+
+
 #
-
----
-- hosts: work01
-  gather_facts: false
-  become: false
-
-  tasks:
+# Stop the MirrorMaker process.
+docker-compose \
+    --file "${HOME}/mirror-compose.yml" \
+    down
 
 #
-# Check our account is a mamber of 'libvirt' group.
+# Update the topic names.
+sed -E -i '
+    /whitelist/,/]/ {
+        /(whitelist|])/ !{
+            s/"[^"]*"/"'${topicbar}'"/
+            }
+        }
+    ' mirror-compose.yml
+
 #
-
-    - name: List the VMs
-      command:
-        argv:
-          - "virsh"
-          - "--connect"
-          - "qemu:///system"
-          - "list"
-          - "--all"
+# Start the MirrorMaker process.
+docker-compose \
+    --file "${HOME}/mirror-compose.yml" \
+    up --detach \
+        tina
 
 
-    - name: Attach discs to the Kafka VMs
-      include_tasks: deploy-006-01.yml
-      loop: "{{ groups['kafkas'] }}"
-      loop_control:
-        loop_var:  vm_name
-        index_var: vm_index
 
 

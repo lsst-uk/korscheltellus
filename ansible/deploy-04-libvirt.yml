@@ -29,36 +29,31 @@
 ---
 - hosts: work01
   gather_facts: false
-  become: false
 
   tasks:
 
-    - name: Check we can use sudo
-      become: true
-      ping:
-
-    - name: Check pip is installed
+    - name: "Check pip is installed"
       become: true
       apt:
         update_cache: true
         name:  python3-pip
         state: present
 
-    - name: Check pkg-config is installed
+    - name: "Check pkg-config is installed"
       become: true
       apt:
         update_cache: true
         name:  pkg-config
         state: present
 
-    - name: Check libvirt-dev is installed
+    - name: "Check libvirt-dev is installed"
       become: true
       apt:
         update_cache: true
         name:  libvirt-dev
         state: present
 
-    - name: Check libvirt-python is installed
+    - name: "Check libvirt-python is installed"
       become: true
       pip:
         name: [
@@ -67,13 +62,14 @@
             ]
         state: latest
 
-    - name: List the storage pools
-      virt_pool:
-        command: list_pools
-      register: pool_list
-    - debug:
-        msg: Pools {{ pool_list }}
 
+#    - name: List the storage pools
+#      virt_pool:
+#        command: list_pools
+#      register: pool_list
+#    - debug:
+#        msg: Pools {{ pool_list }}
+#
 #
 #    - name: Define our storage pool
 #      virt_pool:

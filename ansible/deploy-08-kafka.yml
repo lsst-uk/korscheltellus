@@ -1,0 +1,56 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+#
+# Deploy and start our Kafka services.
+#
+
+---
+- hosts: kafkas
+  gather_facts: false
+  become: false
+
+  vars:
+     num_partitions: "{{ 4 * 4 * 16 }}"
+     retention_ms: "{{ 7 * 24 * 60 * 60 * 1000 }}"
+     retention_bytes: "{{ -1 }}"
+
+  tasks:
+
+    - name: "Deploy our Kafka compose file"
+      template:
+        src:  kafka/kafka-compose.yml
+        dest: kafka-compose.yml
+      vars:
+        mntpath: '/data-vdc'
+        logpath: '/data-vdc'
+
+    - name: "Start our Kafka services"
+      docker_compose:
+        project_src:
+            '.'
+        files:
+          - kafka-compose.yml
+        services:
+          - emily
+        state:
+          present
+

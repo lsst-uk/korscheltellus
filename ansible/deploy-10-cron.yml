@@ -20,29 +20,45 @@
 #
 
 #
-# Deploy and start our Zookeeper services.
+# Add a cron tab to automatically update the topic.
 #
 
 ---
-- hosts: zookeepers
-  gather_facts: false
-  become: false
+- hosts: mirrors
+  gather_facts: true
 
   tasks:
 
-    - name: Install our Zookeeper compose file
-      template:
-        src:  zookeeper.yml
-        dest: zookeeper.yml
+  - name: "Check the cron daemon is installed"
+    become: true
+    dnf:
+      name:  cronie
+      state: present
 
-    - name: Start our Zookeeper service
-      docker_compose:
-        project_src:
-            '.'
-        files:
-          - zookeeper.yml
-        services:
-          - courtney
-        state:
-          present
+  - name: "Check the cron daemon is enabled and started"
+    become: true
+    systemd:
+      enabled: true
+      name:  crond
+      state: started
+
+  - name: "Create the user's bin directory"
+    file:
+      path: 'bin'
+      state: directory
+
+  - name: "Deploy our topic update script"
+    copy:
+      src:  'mirror/bin/update-topic.sh'
+      dest: 'bin/update-topic.sh'
+      mode: 'u=rx,g=,o='
+
+  - name: "Install our crontab entry"
+    cron:
+      name:   "Update topics"
+      user:   "{{ansible_env.USER}}"
+      minute: '3'
+      hour:   '2'
+      job:    "{{ansible_env.HOME}}/bin/update-topic.sh"
+
 

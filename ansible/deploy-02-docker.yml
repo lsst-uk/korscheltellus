@@ -20,18 +20,18 @@
 #
 
 #
-# Installing Docker Engine in Fedora via Ansible
+# Installing Docker Engine on Fedora using Ansible.
 # http://www.mydailytutorials.com/docker-engine-fedora-25-ansible/
 #
 
 ---
 - hosts: dockers
   gather_facts: false
-  become: true
 
   tasks:
 
-  - name: Remove Fedora Docker packages
+  - name: "Remove Fedora Docker packages"
+    become: true
     dnf:
       name: [
         'docker',
@@ -41,29 +41,36 @@
         ]
       state: absent
 
-  - name: Check dnf-plugins-core is installed
+  - name: "Check dnf-plugins-core is installed"
+    become: true
     dnf:
       name:  dnf-plugins-core
       state: present
 
-  - name: Add Docker-CE dnf repository
-    shell: '
-        dnf config-manager \
-            --add-repo \
-                https://download.docker.com/linux/fedora/docker-ce.repo
-        '
+  - name: "Add the Docker-CE dnf repository"
+    become: true
+    command:
+      argv:
+        - 'dnf',
+        - 'config-manager',
+        - '--add-repo',
+        - 'https://download.docker.com/linux/fedora/docker-ce.repo'
 
-  - name: Check Docker-CE is installed
+  - name: "Check Docker-CE is installed"
+    become: true
     dnf:
      name:  docker-ce
      state: latest
 
-  - name: Check Docker service is started
+  - name: "Check Docker service is enabled and started"
+    become: true
     systemd:
+      enabled: true
       name:  docker
       state: started
 
-  - name: Install Python Docker libraries for Ansible to use
+  - name: "Install Python Docker libraries for Ansible to use"
+    become: true
     pip:
       name: [
           'docker',
