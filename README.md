@@ -1,5 +1,5 @@
 # Korscheltellus
-Ansible deployment scripts for stage 1 Kafka FIFO buffer.
+Ansible deployment scripts for stage 1 Kafka FIFO buffer on a testbed worker node.
 
 Named after the [Korscheltellus lupulina](https://www.ukmoths.org.uk/species/korscheltellus-lupulina) Common Swift moth.
 
